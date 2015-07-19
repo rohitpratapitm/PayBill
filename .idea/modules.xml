@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PayBill.iml" filepath="$PROJECT_DIR$/PayBill.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jackson-all-1.9.0/jackson-all-1.9.0.iml" filepath="$PROJECT_DIR$/jackson-all-1.9.0/jackson-all-1.9.0.iml" />
     </modules>
   </component>
 </project>
