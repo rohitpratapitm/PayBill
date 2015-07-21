@@ -1,7 +1,12 @@
 <resources>
     <string name="app_name">PayBill</string>
 
-    <string name="hello_world">Hello world!</string>
+    <string name="enter_bill_id">Enter Bill id</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_search_bill">SearchBill</string>
+    <string name="title_activity_show_bill">ShowBill</string>
+
+    <string name="hello_world">Hello world!</string>
+
 
 </resources>
