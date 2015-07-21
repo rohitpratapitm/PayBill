@@ -70,24 +70,6 @@ public class MyHttpAPI {
 		wr.write(postData);
 		wr.flush();
 		wr.close();
-
-		// responseCode = con.getResponseCode();
-/*
-		BufferedReader in = new BufferedReader(new InputStreamReader(
-				mConnection.getInputStream()));
-
-		StringBuffer response = new StringBuffer();
-
-		String inputLine;
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-		in.close();
-		// print result
-		
-		mJSONResult = response.toString().replace("'","\"");
-		System.out.println(mJSONResult);
-		*/
 	}
 
 	private static String createCookie() {
@@ -112,7 +94,7 @@ public class MyHttpAPI {
 
 		return cookie;
 	}
-
+/*
 	public MyJSONObject getJsonAsMap() {
 
 		MyJSONObject obj=null;
@@ -126,12 +108,12 @@ public class MyHttpAPI {
 			e.printStackTrace();
 		}
 		return obj;
-	}
-
+	}*/
+/*
 	public static void main(String args[]) {
 		MyHttpAPI request = new MyHttpAPI(null);
 		MyJSONObject jsonResult = request.getJsonAsMap();
 		System.out.println("Response:"+jsonResult.getSuccess());
 		System.out.println("Bill Info:"+"\n"+jsonResult.getBillInfo());
-	}
+	}*/
 }

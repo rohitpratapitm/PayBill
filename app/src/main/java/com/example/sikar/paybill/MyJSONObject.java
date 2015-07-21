@@ -21,8 +21,8 @@ public class MyJSONObject {
 	public void setResults(List<HashMap> results) {
 		this.results = results;
 	}
-	
+	/*
 	public BillInfo getBillInfo(){
 		return new BillInfo(results);
-	}
+	}*/
 }
