@@ -31,13 +31,15 @@
             android:label="@string/title_activity_search_bill" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
-
-
             </intent-filter>
         </activity>
         <activity
             android:name=".ShowBill"
             android:label="@string/title_activity_show_bill" >
+        </activity>
+        <activity
+            android:name=".PayBill"
+            android:label="@string/title_activity_pay_bill" >
         </activity>
     </application>
 

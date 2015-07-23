@@ -1,43 +1,23 @@
 package com.example.sikar.paybill;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 
-public class ShowBill extends Activity {
+public class PayBill extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_show_bill);
-
-        Account account = (Account)getIntent().getExtras().get("Account");
-
-        TextView customerNameView = (TextView)findViewById(R.id.customer_name);
-        customerNameView.setText(account.getCustomerName());
-
-        Button payBillButton = (Button)findViewById(R.id.pay_bill);
-        payBillButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent payBillIntent = new Intent(Intent.ACTION_VIEW);
-                //payBillIntent.
-            }
-        });
-
+        setContentView(R.layout.activity_pay_bill);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_show_bill, menu);
+        getMenuInflater().inflate(R.menu.menu_pay_bill, menu);
         return true;
     }
 
