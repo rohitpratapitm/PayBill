@@ -47,6 +47,7 @@ public class HttpRequest {
             mCookieManager = new CookieManager();
             mCookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
             CookieHandler.setDefault(mCookieManager);
+
         }catch (MalformedURLException aMalformedURLException){
             aMalformedURLException.printStackTrace();
         }catch (IOException aIOException){
@@ -91,29 +92,31 @@ public class HttpRequest {
         }
         return mCookie;
     }
-    public void sendGETRequest(HashMap<String,String> aQueryParameters){
+    public HttpURLConnection sendGETRequest(){
         //only setting cookie here
         getCookie();
         //mConnection.setRequestMethod(HTTP_REQUEST_TYPE.GET.name());
+        return mConnection;
     }
 
-    public void sendPOSTRequest(HashMap<String,String> aQueryParameters){
+    public HttpURLConnection sendPOSTRequest(HashMap<String,String> aQueryParameters) {
+
         try {
             mConnection.setRequestMethod(HTTP_REQUEST_TYPE.POST.name());
             initializeWithDefaults();
             //Send parameters
             mConnection.setDoOutput(true);
-            DataOutputStream wr = new DataOutputStream (mConnection.getOutputStream ());
+            DataOutputStream wr = new DataOutputStream(mConnection.getOutputStream());
             String urlParameters = HttpUtils.convertQueryParametersToString(aQueryParameters);
-            wr.writeBytes (urlParameters);
+            wr.writeBytes(urlParameters);
             wr.flush();
             wr.close();
-        }catch (ProtocolException aProtocolException){
+        } catch (ProtocolException aProtocolException) {
             aProtocolException.printStackTrace();
-        }catch (IOException aIOException){
+        } catch (IOException aIOException) {
             aIOException.printStackTrace();
         }
-
+        return mConnection;
     }
 
     public void initializeHeader(HashMap<String,String> aHeaderParameters){

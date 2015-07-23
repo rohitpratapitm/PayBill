@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.HashMap;
 
 /**
  * Created by sikar on 7/22/2015.
@@ -32,7 +33,7 @@ public class HttpPostTask extends AsyncTask<String,Void,Account> {
     public static final int OK = 200;
     //URL Parameters
     private static final String CHOOSE_IDENTIFIER = "chooseIdentifier";
-    private String cookie ;
+    private String mSessionCookie ;
     //instantiates httpclient to make request
     DefaultHttpClient mClient = new DefaultHttpClient();
 
@@ -45,10 +46,22 @@ public class HttpPostTask extends AsyncTask<String,Void,Account> {
 
     @Override
     protected Account doInBackground(String... params) {
+/*
+        HashMap<String,String> queryParametes = new HashMap<String,String>();
+        queryParametes.put("_nfpb","true");
+        queryParametes.put("_pageLabel","custCentre_viewBill_bpl");
 
-//        HashMap<String,String> queryParametes = new HashMap<String,String>();
-//        HttpRequest httpGETRequest = new HttpRequest(HOST, HttpRequest.HTTP_REQUEST_TYPE.GET,queryParametes);
+        //1. Send a GET request to create a Session Cookie
+        HttpRequest httpGETRequest = new HttpRequest(HOST, HttpRequest.HTTP_REQUEST_TYPE.GET,queryParametes);
+        httpGETRequest.sendGETRequest();
+        mSessionCookie = httpGETRequest.getCookie();
 
+        //2.Do a POST Request and send account Id as parameter
+        HashMap<String,String> postQueryParameters = new HashMap<String,String>();
+        postQueryParameters = initializeDefaultParameters(postQueryParameters);
+        postQueryParameters.put(Account.ACCOUNT_ID,params[0]);
+        HttpRequest httpPOSTRequest = new HttpRequest(HOST, HttpRequest.HTTP_REQUEST_TYPE.POST,postQueryParameters);
+*/
         //String cookie = null;
         String accountId = params[0];
         try {
@@ -57,8 +70,8 @@ public class HttpPostTask extends AsyncTask<String,Void,Account> {
             con.setRequestMethod("GET");
             con.setRequestProperty("User-Agent", USER_AGENT);
             int responseCode = con.getResponseCode();
-            cookie = con.getHeaderField("Set-Cookie");
-            cookie = cookie.substring(0, cookie.indexOf(";"));
+            mSessionCookie = con.getHeaderField("Set-Cookie");
+            mSessionCookie = mSessionCookie.substring(0, mSessionCookie.indexOf(";"));
         } catch (ProtocolException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -76,7 +89,7 @@ public class HttpPostTask extends AsyncTask<String,Void,Account> {
         request.setHeader("Content-type", "application/json");
         request.setHeader("Accept", "*/*");
         request.setHeader("Accept-Encoding", "gzip, deflate");
-        request.setHeader("Cookie", cookie);
+        request.setHeader("Cookie", mSessionCookie);
         request.setHeader("User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36");
         request.setHeader("Accept-Language","en-US,en;q=0.8,hi;q=0.6");
         request.setHeader("X-Requested-With", "XMLHttpRequest");
@@ -110,5 +123,12 @@ public class HttpPostTask extends AsyncTask<String,Void,Account> {
         showBillIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mActivity.getApplicationContext().startActivity(showBillIntent);
 
+    }
+
+    private HashMap<String,String> initializeDefaultParameters(HashMap<String,String> aParameterMap){
+        //String urlParameters = "chooseIdentifier=Account%20ID&chooseIdentifier=Account%20ID&accntId=9493692000&chooseGateway=BillDesk&chooseGateway=Bill%20Desk%20Payment&mblNum=&emailId=&gridValues=";
+        aParameterMap.put("chooseIdentifier","Account ID");
+
+        return aParameterMap;
     }
 }
