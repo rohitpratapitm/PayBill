@@ -1,6 +1,7 @@
 package com.example.sikar.web;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 
@@ -12,8 +13,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
@@ -88,9 +92,12 @@ public class HttpPostTask extends AsyncTask<String,Void,Account> {
             aIOException.printStackTrace();
         }
         System.out.println("Name is : "+account.getCustomerName());
+
         return account;
 
     }
+
+
     @Override
     protected void onPostExecute(Account aAccount) {
 

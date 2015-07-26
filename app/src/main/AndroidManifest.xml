@@ -41,6 +41,10 @@
             android:name=".PayBill"
             android:label="@string/title_activity_pay_bill" >
         </activity>
+        <activity
+            android:name=".CreateAccount"
+            android:label="@string/title_activity_create_account" >
+        </activity>
     </application>
 
 </manifest>

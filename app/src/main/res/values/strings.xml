@@ -8,6 +8,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_pay_bill">PayBill</string>
+    <string name="title_activity_create_account">CreateAccount</string>
 
 
 </resources>

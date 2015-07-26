@@ -1,6 +1,7 @@
 package com.example.sikar.paybill;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
@@ -28,7 +29,12 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.w3c.dom.Text;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -49,8 +55,28 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent searchBillIntent = new Intent(MainActivity.this,SearchBill.class);
-        startActivity(searchBillIntent);
+        Button newAccountButton = (Button)findViewById(R.id.new_account);
+        newAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent createNewAccount = new Intent(MainActivity.this,CreateAccount.class);
+                startActivity(createNewAccount);
+            }
+        });
+        //1. Fetch existing records
+        Account existingRecord = readRecord();
+
+        //2. Show this on layout
+        if(existingRecord != null){
+            Intent showBillIntent = new Intent(MainActivity.this,ShowBill.class);
+            showBillIntent.putExtra("Account",existingRecord);
+            startActivity(showBillIntent);
+        }else{
+            Intent searchBillIntent = new Intent(MainActivity.this,SearchBill.class);
+            startActivity(searchBillIntent);
+        }
+
     }
 
     @Override
@@ -75,5 +101,32 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    private Account readRecord()  {
+        String FILENAME = "account_info";
+        String string = "hello world!";
+        Account account = null;
 
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+        try {
+
+            fis = openFileInput(FILENAME);
+            ois = new ObjectInputStream(fis);
+            account = (Account)ois.readObject();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally{
+            try {
+                if(ois !=null)ois.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return account;
+    }
 }

@@ -27,6 +27,12 @@ public class Account implements Serializable{
     public Account(){
 
     }
+    public Account(final String aAccountId,final String aMobileNumber,final String aEmailId){
+
+        mAccountId = aAccountId;
+        mMobileNumber = aMobileNumber;
+        mEmailId = aEmailId;
+    }
     public Account(String aAccountId,String aConnectionNo,String aCustomerName,String aCity,String aMobileNumber,String aEmailId,String aAddress){
         mAccountId    = aAccountId;
         mConnectionNo = aConnectionNo;
