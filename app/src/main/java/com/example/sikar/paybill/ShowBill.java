@@ -18,9 +18,19 @@ public class ShowBill extends Activity {
         setContentView(R.layout.activity_show_bill);
 
         Account account = (Account)getIntent().getExtras().get("Account");
+        BillInfo billInfo = account.getBillInfo();
 
         TextView customerNameView = (TextView)findViewById(R.id.customer_name);
         customerNameView.setText(account.getCustomerName());
+
+        TextView accountNumberView = (TextView)findViewById(R.id.accountnumber);
+        accountNumberView.setText(account.getAccountId());
+
+        TextView billAmountView = (TextView)findViewById(R.id.billamount);
+        billAmountView.setText(billInfo.getAmtToBePaid());
+
+        TextView billDueDatetView = (TextView)findViewById(R.id.duedate);
+        billDueDatetView.setText(billInfo.getBillDueDate());
 
         Button payBillButton = (Button)findViewById(R.id.pay_bill);
         payBillButton.setOnClickListener(new View.OnClickListener() {
