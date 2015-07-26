@@ -16,11 +16,13 @@ import java.util.Set;
  */
 public class HttpUtils {
 
+
     public static String addQueryParametersToURL(String aURLWithoutParameters,HashMap<String,String> aParameters){
-        StringBuffer urlWithParams = null;
 
         if(!aURLWithoutParameters.endsWith("?"))
             aURLWithoutParameters += "?";
+
+        StringBuffer urlWithParams = new StringBuffer(aURLWithoutParameters);
 
         String paramString = convertQueryParametersToString(aParameters);
         urlWithParams.append(paramString);
@@ -29,14 +31,15 @@ public class HttpUtils {
     }
 
     public static String convertQueryParametersToString(HashMap<String,String> aParameters){
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
 
         Set<Map.Entry<String,String>> entrySet = aParameters.entrySet();
         for(Map.Entry<String,String> entry: entrySet){
             params.add(new BasicNameValuePair(entry.getKey(),entry.getValue()));
         }
 
-        String paramString = URLEncodedUtils.format(params, HTTP.UTF_8);
+        String paramString = URLEncodedUtils.format(params, "UTF-8");
         return paramString;
     }
+
 }

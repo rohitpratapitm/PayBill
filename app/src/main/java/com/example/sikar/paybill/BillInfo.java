@@ -1,9 +1,11 @@
 package com.example.sikar.paybill;
 
+import java.io.Serializable;
+
 /**
  * Created by sikar on 7/22/2015.
  */
-public class BillInfo {
+public class BillInfo implements Serializable{
 
     public static final String BILL_ID = "billId";
 

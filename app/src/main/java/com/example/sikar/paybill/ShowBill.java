@@ -27,8 +27,8 @@ public class ShowBill extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent payBillIntent = new Intent(Intent.ACTION_VIEW);
-                //payBillIntent.
+                Intent payBillIntent = new Intent(ShowBill.this,PayBill.class);
+                startActivity(payBillIntent);
             }
         });
 

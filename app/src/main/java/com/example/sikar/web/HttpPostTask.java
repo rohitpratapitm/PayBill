@@ -13,11 +13,14 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by sikar on 7/22/2015.
@@ -29,14 +32,13 @@ public class HttpPostTask extends AsyncTask<String,Void,Account> {
     public static final String HOME_SCREEN = "http://www.mpcz.co.in/portal/Bhopal_home.portal?_nfpb=true&_pageLabel=custCentre_viewBill_bpl";
     public static final String LOGIN_SCREEN = "http://www.mpcz.co.in/onlineBillPayment?do=onlineBillPaymentUnregValidate";
     public static final String HOST = "http://www.mpcz.co.in/portal/Bhopal_home.portal";
+    public static final String POST_ACCOUNT_ID = "accntId";
+    public static final String POST_CHOOSE_IDENTIFIER = "chooseIdentifier";
 
     public static final int OK = 200;
     //URL Parameters
     private static final String CHOOSE_IDENTIFIER = "chooseIdentifier";
     private String mSessionCookie ;
-    //instantiates httpclient to make request
-    DefaultHttpClient mClient = new DefaultHttpClient();
-
     Activity mActivity;
 
     public HttpPostTask(Activity aActivity){
@@ -46,74 +48,48 @@ public class HttpPostTask extends AsyncTask<String,Void,Account> {
 
     @Override
     protected Account doInBackground(String... params) {
-/*
+
+        Account account = null;
         HashMap<String,String> queryParametes = new HashMap<String,String>();
-        queryParametes.put("_nfpb","true");
         queryParametes.put("_pageLabel","custCentre_viewBill_bpl");
+        queryParametes.put("_nfpb", "true");
 
         //1. Send a GET request to create a Session Cookie
         HttpRequest httpGETRequest = new HttpRequest(HOST, HttpRequest.HTTP_REQUEST_TYPE.GET,queryParametes);
-        httpGETRequest.sendGETRequest();
+        HttpURLConnection httpGETConnection = httpGETRequest.sendGETRequest();
         mSessionCookie = httpGETRequest.getCookie();
+        int responseCode = 0;
+        try {
+            responseCode = httpGETConnection.getResponseCode();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Response code is : "+responseCode);
+        httpGETConnection.disconnect();
 
-        //2.Do a POST Request and send account Id as parameter
+        //2.Make a POST Request and send account Id as parameter
         HashMap<String,String> postQueryParameters = new HashMap<String,String>();
         postQueryParameters = initializeDefaultParameters(postQueryParameters);
-        postQueryParameters.put(Account.ACCOUNT_ID,params[0]);
-        HttpRequest httpPOSTRequest = new HttpRequest(HOST, HttpRequest.HTTP_REQUEST_TYPE.POST,postQueryParameters);
-*/
-        //String cookie = null;
-        String accountId = params[0];
-        try {
-            URL obj = new URL(HOME_SCREEN);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            con.setRequestMethod("GET");
-            con.setRequestProperty("User-Agent", USER_AGENT);
-            int responseCode = con.getResponseCode();
-            mSessionCookie = con.getHeaderField("Set-Cookie");
-            mSessionCookie = mSessionCookie.substring(0, mSessionCookie.indexOf(";"));
-        } catch (ProtocolException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        String urlParameters = "chooseIdentifier=Account%20ID&chooseIdentifier=Account%20ID&accntId=9493692000&chooseGateway=BillDesk&chooseGateway=Bill%20Desk%20Payment&mblNum=&emailId=&gridValues=";
-        //url with the post data
-        HttpPost request = new HttpPost(LOGIN_SCREEN);
+        postQueryParameters.put(POST_ACCOUNT_ID, params[0]);
 
-        //sets a request header so the page receving the request
-        //will know what to do with it
-        request.setHeader("Accept", "application/json");
-        request.setHeader("Content-type", "application/json");
-        request.setHeader("Accept", "*/*");
-        request.setHeader("Accept-Encoding", "gzip, deflate");
-        request.setHeader("Cookie", mSessionCookie);
-        request.setHeader("User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36");
-        request.setHeader("Accept-Language","en-US,en;q=0.8,hi;q=0.6");
-        request.setHeader("X-Requested-With", "XMLHttpRequest");
-        request.setHeader("Connection", "keep-alive");
-        request.setHeader("Referer", HOME_SCREEN);
-        request.setHeader("Host", "www.mpcz.co.in");
-        request.setHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        HttpRequest httpPOSTRequest = new HttpRequest(LOGIN_SCREEN, HttpRequest.HTTP_REQUEST_TYPE.POST,postQueryParameters);
+        httpPOSTRequest.setCookie(mSessionCookie);
+        HttpURLConnection connection = httpPOSTRequest.sendPOSTRequest(postQueryParameters);
 
-        try {
-            //sets the post request as the resulting string
-            request.setEntity(new StringEntity(urlParameters));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
         JSONResponseHandler responseHandler = new JSONResponseHandler();
-
-        try {
-            return mClient.execute(request,responseHandler);
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        InputStream stream = null;
+        try{
+            stream = connection.getInputStream();
+            if(connection.getResponseCode() == HttpsURLConnection.HTTP_OK){
+                System.out.println("Response is good");
+            }
+            account = responseHandler.handleResponse(stream);
+        }catch (IOException aIOException){
+            aIOException.printStackTrace();
         }
-        return null;
+        System.out.println("Name is : "+account.getCustomerName());
+        return account;
+
     }
     @Override
     protected void onPostExecute(Account aAccount) {
@@ -124,11 +100,19 @@ public class HttpPostTask extends AsyncTask<String,Void,Account> {
         mActivity.getApplicationContext().startActivity(showBillIntent);
 
     }
+    private static HashMap<String,String> initializeDefaultParameters(HashMap<String,String> aParameterMap){
+    //String urlParameters = "chooseIdentifier=Account%20ID&chooseIdentifier=Account%20ID&accntId=9493692000&chooseGateway=BillDesk&chooseGateway=Bill%20Desk%20Payment&mblNum=&emailId=&gridValues=";
+    //aParameterMap.put("accntId","9493692000");
+    aParameterMap.put(POST_CHOOSE_IDENTIFIER,"Account ID");
+    //aParameterMap.put("chooseIdentifier","Account ID");
 
-    private HashMap<String,String> initializeDefaultParameters(HashMap<String,String> aParameterMap){
-        //String urlParameters = "chooseIdentifier=Account%20ID&chooseIdentifier=Account%20ID&accntId=9493692000&chooseGateway=BillDesk&chooseGateway=Bill%20Desk%20Payment&mblNum=&emailId=&gridValues=";
-        aParameterMap.put("chooseIdentifier","Account ID");
+    //aParameterMap.put("chooseGateway","BillDesk");
+    //aParameterMap.put("chooseGateway","Bill Desk Payment");
+    //aParameterMap.put("mblNum","9346584202");
+    //aParameterMap.put("emailId","rohitpratapitm@gmail.com");
+    //aParameterMap.put("gridValues","");
 
-        return aParameterMap;
+    return aParameterMap;
     }
+
 }

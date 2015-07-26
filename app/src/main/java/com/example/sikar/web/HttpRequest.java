@@ -18,6 +18,7 @@ import java.util.HashMap;
  */
 public class HttpRequest {
 
+
     public static final String HEADER_ACCEPT = "Accept";
     public static final String HEADER_CONTENT_TYPE = "Content-type";
     public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
@@ -102,12 +103,14 @@ public class HttpRequest {
     public HttpURLConnection sendPOSTRequest(HashMap<String,String> aQueryParameters) {
 
         try {
-            mConnection.setRequestMethod(HTTP_REQUEST_TYPE.POST.name());
+            // mConnection.setRequestMethod(HTTP_REQUEST_TYPE.POST.name());
             initializeWithDefaults();
             //Send parameters
             mConnection.setDoOutput(true);
+            mConnection.setDoInput(true);
             DataOutputStream wr = new DataOutputStream(mConnection.getOutputStream());
             String urlParameters = HttpUtils.convertQueryParametersToString(aQueryParameters);
+            //String urlParameters = "chooseIdentifier=Account%20ID&chooseIdentifier=Account%20ID&accntId=9493692000&chooseGateway=BillDesk&chooseGateway=Bill%20Desk%20Payment&mblNum=&emailId=&gridValues=";
             wr.writeBytes(urlParameters);
             wr.flush();
             wr.close();
@@ -127,8 +130,7 @@ public class HttpRequest {
 
     private void initializeWithDefaults(){
 
-        mConnection.setRequestProperty(HEADER_ACCEPT, "application/json; */*");
-        mConnection.setRequestProperty(HEADER_CONTENT_TYPE, "application/json;application/x-www-form-urlencoded; charset=UTF-8");
+        mConnection.setRequestProperty(HEADER_ACCEPT, "*/*");
         mConnection.setRequestProperty(HEADER_ACCEPT_ENCODING, "gzip, deflate");
         mConnection.setRequestProperty(HEADER_COOKIE, mCookie);
         mConnection.setRequestProperty(HEADER_USER_AGENT, "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36");
@@ -137,7 +139,16 @@ public class HttpRequest {
         mConnection.setRequestProperty(HEADER_CONNECTION, "keep-alive");
         mConnection.setRequestProperty(HEADER_REFERER, HttpPostTask.HOME_SCREEN);
         mConnection.setRequestProperty(HEADER_HOST, "www.mpcz.co.in");
+        mConnection.setRequestProperty(HEADER_CONTENT_TYPE, "application/x-www-form-urlencoded; charset=UTF-8");
 
     }
+
+    public void setCookie(String aSessionCookie) {
+        if(mCookie==null){
+            mCookie = aSessionCookie;
+        }
+
+    }
+
 
 }

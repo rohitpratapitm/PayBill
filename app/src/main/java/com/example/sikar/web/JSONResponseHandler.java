@@ -12,29 +12,49 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created by sikar on 7/22/2015.
  */
-public class JSONResponseHandler implements ResponseHandler<Account> {
+public class JSONResponseHandler  {
 
     private static final String SUCCESS = "success";
     private static final String FAILURE = "failure";
     private static final String DATA = "results";
 
-    @Override
-    public Account handleResponse(HttpResponse response)
-            throws ClientProtocolException, IOException {
+
+    public Account handleResponse(InputStream aResponse) throws IOException {
 
         Account account = null;
-        String JSONResponse = new BasicResponseHandler().handleResponse(response);
+        //String JSONResponse = new BasicResponseHandler().handleResponse(response);
+        BufferedReader responseReader = new BufferedReader(new InputStreamReader(aResponse, StandardCharsets.UTF_8.name()));
+        StringBuffer responseBuffer = new StringBuffer();
+        String inputLine;
+        try{
+            while ((inputLine = responseReader.readLine()) != null)
+                responseBuffer.append(inputLine);
+        }catch (IOException aIOException){
+            aIOException.printStackTrace();
+            throw aIOException;
+        }finally {
+            responseReader.close();
+        }
+
+        final String duplicateKey = "amtToBePaid";
+        int index = responseBuffer.indexOf(duplicateKey);
+        responseBuffer = responseBuffer.delete(index, index+duplicateKey.length());
+        String JSONResponse = responseBuffer.toString();
         try {
 
             // Get top-level JSON Object - a Map
             JSONObject responseObject = (JSONObject) new JSONTokener(JSONResponse).nextValue();
 
-            // Extract value of "earthquakes" key -- a List
+
             Boolean isSuccessful = responseObject.getBoolean(SUCCESS);
             JSONArray accountInfoArray = responseObject.getJSONArray(DATA);
 
@@ -52,8 +72,8 @@ public class JSONResponseHandler implements ResponseHandler<Account> {
                 account.setCustomerName(accountInfo.getString(Account.CUSTOMER_NAME));
                 account.setCity(accountInfo.getString(Account.CITY));
                 account.setAddress(accountInfo.getString(Account.ADDRESS));
-                account.setEmailId(accountInfo.getString(Account.EMAIL_ID));
-                account.setMobileNumber(accountInfo.getString(Account.MOBILE_NO));
+                //account.setEmailId(accountInfo.getString(Account.EMAIL_ID));
+                //account.setMobileNumber(accountInfo.getString(Account.MOBILE_NO));
 
                 //Create BillInfo Object
                 BillInfo billInfo = new BillInfo();
