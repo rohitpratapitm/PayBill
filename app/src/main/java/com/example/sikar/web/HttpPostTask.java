@@ -47,7 +47,7 @@ public class HttpPostTask extends AsyncTask<String,Void,Account> {
 
         JSONResponseHandler responseHandler = new JSONResponseHandler();
         try{
-            account = responseHandler.handleResponse(httpPOSTResponse);
+            account = responseHandler.handleAccountResponse(httpPOSTResponse);
         }catch (IOException aIOException){
             aIOException.printStackTrace();
         }

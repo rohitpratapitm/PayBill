@@ -2,12 +2,12 @@ package com.example.sikar.paybill;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
+import android.widget.EditText;
 
 import com.example.sikar.web.HttpPostTask;
 import com.example.sikar.web.HttpRequest;
@@ -15,7 +15,6 @@ import com.example.sikar.web.JSONResponseHandler;
 import com.example.sikar.web.MPCZConstants;
 import com.example.sikar.web.utils.MySession;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +24,7 @@ public class PayBill extends Activity {
     private Account mAccount;
     private Context mContext ;
     private WebView mWebView;
+    private EditText mStatusView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +34,7 @@ public class PayBill extends Activity {
 
         mContext = this.getApplicationContext();
 
+        mStatusView = (EditText)findViewById(R.id.status);
         mWebView = (WebView)findViewById(R.id.webview);
 
         mAccount = (Account)getIntent().getExtras().get("Account");
@@ -65,10 +66,10 @@ public class PayBill extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    class PayBillTask extends AsyncTask<String,Void,Object> {
+    class PayBillTask extends AsyncTask<String,Void,TransactionInfo> {
 
         private Map<String,String> mQueryParameters;
-        private Object mResult;
+        private TransactionInfo mTransactionInfo;
         private Account mAccount;
 
         public PayBillTask(Account aAccount){
@@ -76,36 +77,34 @@ public class PayBill extends Activity {
         }
 
         @Override
-        protected Object doInBackground(String... params) {
+        protected TransactionInfo doInBackground(String... params) {
 
             mQueryParameters = initializeQueryParameters();
             HttpRequest httpGETRequest = new HttpRequest(MPCZConstants.PAYMENT_SCREEN,HttpRequest.HTTP_REQUEST_TYPE.GET,mQueryParameters);
             httpGETRequest.setCookie(MySession.getSessionCookie());
             String httpGETResponse = httpGETRequest.sendGETRequest();
-            JSONResponseHandler handler = new JSONResponseHandler();
-            try {
-                mResult = handler.handleResponse(httpGETResponse);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
-            return mResult;
+            JSONResponseHandler handler = new JSONResponseHandler();
+
+            mTransactionInfo = handler.handleTransactionResponse(httpGETResponse);
+
+            return mTransactionInfo;
         }
 
         @Override
-        protected void onPostExecute(Object aResult) {
+        protected void onPostExecute(TransactionInfo aTransactionInfo) {
             //mWebView.loadUrl(MPCZConstants.PAYMENT_SCREEN,mQueryParameters);
+            mStatusView.setText(mTransactionInfo.getTxtAdditionalInfo6());
         }
 
         private Map<String,String> initializeQueryParameters(){
-            // selectname=PaymentUpdation&_dc=1437991416092&accntId=9493692000&billerid=MPMKBHORAP&RU=http%3A%2F%2Fwww.mpcz.co.in%2FpaymentAck&chooseIdentifier=Account%20ID&
-            // amtToBePaid=0&outstandingAmt=0&customerName=SWAMI%20SARAN%20SHARMA&billId=184255954&lastBillAmt=0.00&currentBillAmt=408&billmon=JUL-2015&billissuedate=07-JUL-2015&
-            // billdueDate=20-JUL-2015&consAddres=Q.NO.30GOSPURA%20COLONY%2030%2FA%20TAN&city=TANSEN&mblNum=9346584202&payGateway=BILLDESK&emailId=rohitpratapitm%40gmail.com
+
+
             BillInfo billInfo = mAccount.getBillInfo();
 
             Map<String,String> queryParameters = new HashMap<String,String>();
             //Constant properties
-            queryParameters.put(HttpPostTask.POST_CHOOSE_IDENTIFIER, HttpPostTask.POST_CHOOSE_IDENTIFIER_VALUE);
+            queryParameters.put(MPCZConstants.POST_CHOOSE_IDENTIFIER, MPCZConstants.POST_CHOOSE_IDENTIFIER_VALUE);
             queryParameters.put(BillInfo.BILLER_ID,BillInfo.BILLER_ID_VALUE);
             queryParameters.put(MPCZConstants.RU,MPCZConstants.RU_ACKNOWLEDGMENT_VALUE);
             queryParameters.put(MPCZConstants.PAYMENT_GATEWAY,MPCZConstants.PAYMENT_GATEWAY_VALUE);
@@ -129,9 +128,10 @@ public class PayBill extends Activity {
             //queryParameters.put(BillInfo.MONTH,billInfo.getBillMonth());
             queryParameters.put("billMon",billInfo.getBillMonth());
             queryParameters.put(BillInfo.ISSUE_DATE,billInfo.getBillIssueDate());
-            queryParameters.put(BillInfo.DUE_DATE,billInfo.getBillDueDate());
+            queryParameters.put("billdueDate",billInfo.getBillDueDate());
 
             return queryParameters;
+
         }
     }
 }

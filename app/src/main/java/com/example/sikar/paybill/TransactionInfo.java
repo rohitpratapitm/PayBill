@@ -41,4 +41,73 @@ public class TransactionInfo implements Serializable {
     private String mTxtAdditionalInfo4;
     private String mTxtAdditionalInfo5;
     private String mTxtAdditionalInfo6;
+
+    public String getRU() {
+        return mRU;
+    }
+    public void setRU(String aRU) {
+        this.mRU = aRU;
+    }
+    public String getBillerId() {
+        return mBillerId;
+    }
+    public void setBillerId(String aBillerId) {
+        this.mBillerId = aBillerId;
+    }
+    public String getTxtCustomerID() {
+        return mTxtCustomerID;
+    }
+    public void setTxtCustomerID(String aTxtCustomerID) {
+        this.mTxtCustomerID = aTxtCustomerID;
+    }
+    public String getTxnAmount() {
+        return mTxnAmount;
+    }
+    public void setTxnAmount(String aTxnAmount) {
+        this.mTxnAmount = aTxnAmount;
+    }
+    public String getTxtAdditionalInfo1() {
+        return mTxtAdditionalInfo1;
+    }
+    public void setTxtAdditionalInfo1(String aTxtAdditionalInfo1) {
+        this.mTxtAdditionalInfo1 = aTxtAdditionalInfo1;
+    }
+    public String getTxtAdditionalInfo2() {
+        return mTxtAdditionalInfo2;
+    }
+    public void setTxtAdditionalInfo2(String aTxtAdditionalInfo2) {
+        this.mTxtAdditionalInfo2 = aTxtAdditionalInfo2;
+    }
+    public String getTxtAdditionalInfo3() {
+        return mTxtAdditionalInfo3;
+    }
+    public void setTxtAdditionalInfo3(String aTxtAdditionalInfo3) {
+        this.mTxtAdditionalInfo3 = aTxtAdditionalInfo3;
+    }
+    public String getTxtAdditionalInfo4() {
+        return mTxtAdditionalInfo4;
+    }
+    public void setTxtAdditionalInfo4(String aTxtAdditionalInfo4) {
+        this.mTxtAdditionalInfo4 = aTxtAdditionalInfo4;
+    }
+    public String getTxtAdditionalInfo5() {
+        return mTxtAdditionalInfo5;
+    }
+    public void setTxtAdditionalInfo5(String aTxtAdditionalInfo5) {
+        this.mTxtAdditionalInfo5 = aTxtAdditionalInfo5;
+    }
+    public String getTxtAdditionalInfo6() {
+        return mTxtAdditionalInfo6;
+    }
+    public void setTxtAdditionalInfo6(String aTxtAdditionalInfo6) {
+        this.mTxtAdditionalInfo6 = aTxtAdditionalInfo6;
+    }
+    @Override
+    public String toString() {
+
+
+        return super.toString();
+    }
+
+
 }

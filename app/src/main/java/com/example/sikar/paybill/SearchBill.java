@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.sikar.web.HttpPostTask;
 import com.example.sikar.web.HttpRequest;
 import com.example.sikar.web.JSONResponseHandler;
 import com.example.sikar.web.MPCZConstants;
@@ -101,7 +100,7 @@ public class SearchBill extends Activity {
 
              JSONResponseHandler responseHandler = new JSONResponseHandler();
              try {
-                 mAccount = responseHandler.handleResponse(httpPOSTResponse);
+                 mAccount = responseHandler.handleAccountResponse(httpPOSTResponse);
              } catch (IOException aIOException) {
                  aIOException.printStackTrace();
              }

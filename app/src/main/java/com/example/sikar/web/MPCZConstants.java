@@ -11,6 +11,9 @@ public class MPCZConstants {
 
     public static final String PAYMENT_SCREEN = "http://www.mpcz.co.in/PaymentServlet";
 
+    public static final String POST_CHOOSE_IDENTIFIER = "chooseIdentifier";
+    public static final String POST_CHOOSE_IDENTIFIER_VALUE = "Account ID";
+
     public static final String RU = "RU";
     public static final String RU_ACKNOWLEDGMENT_VALUE = "http://www.mpcz.co.in/paymentAck";
 

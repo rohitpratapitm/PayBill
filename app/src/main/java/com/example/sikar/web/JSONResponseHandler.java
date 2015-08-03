@@ -2,21 +2,14 @@ package com.example.sikar.web;
 
 import com.example.sikar.paybill.Account;
 import com.example.sikar.paybill.BillInfo;
+import com.example.sikar.paybill.TransactionInfo;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.impl.client.BasicResponseHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Created by sikar on 7/22/2015.
@@ -28,7 +21,7 @@ public class JSONResponseHandler  {
     private static final String DATA = "results";
 
 
-    public Account handleResponse(String aResponse) throws IOException {
+    public Account handleAccountResponse(String aResponse) throws IOException {
 
         if(aResponse == null || aResponse.isEmpty()){
             return null;
@@ -95,4 +88,30 @@ public class JSONResponseHandler  {
         }
         return account;
     }
+
+    public TransactionInfo handleTransactionResponse(String aResponse){
+
+        if(aResponse == null || aResponse.isEmpty()){
+            return null;
+        }
+        TransactionInfo transactionInfo = new TransactionInfo();
+
+        String[] transactionValues = aResponse.split(",");
+
+        if(transactionValues !=null && transactionValues.length > 0 ){
+
+            transactionInfo.setTxtAdditionalInfo1(transactionValues[0]);
+            transactionInfo.setBillerId(transactionValues[1]);
+            transactionInfo.setTxtCustomerID(transactionValues[2]);
+            transactionInfo.setRU(transactionValues[3]);
+            transactionInfo.setTxtAdditionalInfo2(transactionValues[4]);
+            transactionInfo.setTxtAdditionalInfo3(transactionValues[5]);
+            transactionInfo.setTxtAdditionalInfo4(transactionValues[6]);
+            transactionInfo.setTxtAdditionalInfo5(transactionValues[7]);
+            transactionInfo.setTxtAdditionalInfo6(transactionValues[8]);
+        }
+
+        return transactionInfo;
+    }
+
 }
