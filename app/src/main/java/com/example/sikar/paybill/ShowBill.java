@@ -1,7 +1,9 @@
 package com.example.sikar.paybill;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,22 +11,44 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.sikar.web.HttpPostTask;
+import com.example.sikar.web.HttpRequest;
+import com.example.sikar.web.JSONResponseHandler;
+import com.example.sikar.web.MPCZConstants;
+import com.example.sikar.web.utils.MySession;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class ShowBill extends Activity {
+
+    private Account mAccount;
+    private Context mContext ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_bill);
 
-        Account account = (Account)getIntent().getExtras().get("Account");
-        BillInfo billInfo = account.getBillInfo();
+        mContext = this.getApplicationContext();
+
+        mAccount = (Account)getIntent().getExtras().get("Account");
 
         TextView customerNameView = (TextView)findViewById(R.id.customer_name);
-        customerNameView.setText(account.getCustomerName());
+        if(mAccount == null){
+            customerNameView.setText("Account object is NULL");
+            return;
+        }
+        BillInfo billInfo = mAccount.getBillInfo();
+
+        customerNameView.setText(mAccount.getCustomerName());
 
         TextView accountNumberView = (TextView)findViewById(R.id.accountnumber);
-        accountNumberView.setText(account.getAccountId());
+        accountNumberView.setText(mAccount.getAccountId());
 
         TextView billAmountView = (TextView)findViewById(R.id.billamount);
         billAmountView.setText(billInfo.getAmtToBePaid());
@@ -32,17 +56,20 @@ public class ShowBill extends Activity {
         TextView billDueDatetView = (TextView)findViewById(R.id.duedate);
         billDueDatetView.setText(billInfo.getBillDueDate());
 
-        Button payBillButton = (Button)findViewById(R.id.pay_bill);
+        final Button payBillButton = (Button)findViewById(R.id.pay_bill);
         payBillButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Intent payBillIntent = new Intent(ShowBill.this,PayBill.class);
+                payBillIntent.putExtra("Account",mAccount);
                 startActivity(payBillIntent);
             }
         });
 
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

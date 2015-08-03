@@ -1,12 +1,9 @@
 package com.example.sikar.web.utils;
 
-import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,8 +14,10 @@ import java.util.Set;
 public class HttpUtils {
 
 
-    public static String addQueryParametersToURL(String aURLWithoutParameters,HashMap<String,String> aParameters){
-
+    public static String addQueryParametersToURL(String aURLWithoutParameters,Map<String,String> aParameters){
+        if(aParameters == null || aParameters.isEmpty()){
+            return aURLWithoutParameters;
+        }
         if(!aURLWithoutParameters.endsWith("?"))
             aURLWithoutParameters += "?";
 
@@ -30,7 +29,7 @@ public class HttpUtils {
         return urlWithParams.toString();
     }
 
-    public static String convertQueryParametersToString(HashMap<String,String> aParameters){
+    public static String convertQueryParametersToString(Map<String,String> aParameters){
         List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
 
         Set<Map.Entry<String,String>> entrySet = aParameters.entrySet();

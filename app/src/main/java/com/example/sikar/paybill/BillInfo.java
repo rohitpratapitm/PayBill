@@ -8,6 +8,8 @@ import java.io.Serializable;
 public class BillInfo implements Serializable{
 
     public static final String BILL_ID = "billId";
+    public static final String BILLER_ID = "billerid";
+    public static final String BILLER_ID_VALUE = "MPMKBHORAP";
 
     public static final String MONTH = "billMonth";
     public static final String ISSUE_DATE = "billIssueDate";

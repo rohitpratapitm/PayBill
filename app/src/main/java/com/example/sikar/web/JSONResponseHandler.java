@@ -28,34 +28,33 @@ public class JSONResponseHandler  {
     private static final String DATA = "results";
 
 
-    public Account handleResponse(InputStream aResponse) throws IOException {
+    public Account handleResponse(String aResponse) throws IOException {
 
-        Account account = null;
-        //String JSONResponse = new BasicResponseHandler().handleResponse(response);
-        BufferedReader responseReader = new BufferedReader(new InputStreamReader(aResponse, StandardCharsets.UTF_8.name()));
-        StringBuffer responseBuffer = new StringBuffer();
-        String inputLine;
-        try{
-            while ((inputLine = responseReader.readLine()) != null)
-                responseBuffer.append(inputLine);
-        }catch (IOException aIOException){
-            aIOException.printStackTrace();
-            throw aIOException;
-        }finally {
-            responseReader.close();
+        if(aResponse == null || aResponse.isEmpty()){
+            return null;
         }
+        Account account = null;
 
         final String duplicateKey = "amtToBePaid";
+        StringBuffer responseBuffer = new StringBuffer(aResponse);
         int index = responseBuffer.indexOf(duplicateKey);
-        responseBuffer = responseBuffer.delete(index, index+duplicateKey.length());
+        if(index > -1){
+            responseBuffer = responseBuffer.delete(index, index+duplicateKey.length());
+        }
         String JSONResponse = responseBuffer.toString();
         try {
 
             // Get top-level JSON Object - a Map
             JSONObject responseObject = (JSONObject) new JSONTokener(JSONResponse).nextValue();
 
-
             Boolean isSuccessful = responseObject.getBoolean(SUCCESS);
+            if(isSuccessful == null){
+                Boolean isFailure    = responseObject.getBoolean(FAILURE);
+                if(isFailure){
+                    return null;
+                }
+            }
+
             JSONArray accountInfoArray = responseObject.getJSONArray(DATA);
 
             // It will ALWAYS be ONE, iterating is USELESS
@@ -73,7 +72,9 @@ public class JSONResponseHandler  {
                 account.setCity(accountInfo.getString(Account.CITY));
                 account.setAddress(accountInfo.getString(Account.ADDRESS));
                 //account.setEmailId(accountInfo.getString(Account.EMAIL_ID));
+                account.setEmailId("rohitpratapitm@gmail.com");
                 //account.setMobileNumber(accountInfo.getString(Account.MOBILE_NO));
+                account.setMobileNumber("9346584202");
 
                 //Create BillInfo Object
                 BillInfo billInfo = new BillInfo();
