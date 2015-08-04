@@ -40,12 +40,9 @@ public class JSONResponseHandler  {
             // Get top-level JSON Object - a Map
             JSONObject responseObject = (JSONObject) new JSONTokener(JSONResponse).nextValue();
 
-            Boolean isSuccessful = responseObject.getBoolean(SUCCESS);
-            if(isSuccessful == null){
-                Boolean isFailure    = responseObject.getBoolean(FAILURE);
-                if(isFailure){
-                    return null;
-                }
+            Boolean isFailure = !responseObject.isNull(FAILURE);
+            if(isFailure){
+                return null;
             }
 
             JSONArray accountInfoArray = responseObject.getJSONArray(DATA);

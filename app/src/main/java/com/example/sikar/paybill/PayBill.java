@@ -2,11 +2,14 @@ package com.example.sikar.paybill;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.sikar.web.HttpPostTask;
@@ -42,6 +45,15 @@ public class PayBill extends Activity {
         PayBillTask payBillTask = new PayBillTask(mAccount);
         payBillTask.execute();
 
+        Button confirmButton = (Button)findViewById(R.id.confirm);
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent paymentIntent = new Intent(mContext,ProcessPayment.class);
+                startActivity(paymentIntent);
+            }
+        });
     }
 
     @Override
@@ -87,7 +99,7 @@ public class PayBill extends Activity {
             JSONResponseHandler handler = new JSONResponseHandler();
 
             mTransactionInfo = handler.handleTransactionResponse(httpGETResponse);
-
+            mTransactionInfo.setCustomerName(mAccount.getCustomerName());
             return mTransactionInfo;
         }
 

@@ -3,6 +3,10 @@ package com.example.sikar.paybill;
 import com.example.sikar.web.MPCZConstants;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by sikar on 8/1/2015.
@@ -14,9 +18,10 @@ public class TransactionInfo implements Serializable {
     public static final String TXT_ADDITIONAL_INFO_3 = "txtAdditionalInfo3";
     public static final String TXT_ADDITIONAL_INFO_4 = "txtAdditionalInfo4";
     public static final String TXT_ADDITIONAL_INFO_5 = "txtAdditionalInfo5";
-    public static final String TXT_ADDITIONAL_INFO_5_VALUE = "Normal";
     public static final String TXT_ADDITIONAL_INFO_6 = "txtAdditionalInfo6";
-    public static final String TXT_ADDITIONAL_INFO_6_VALUE = "Pending";
+    public static final String MESSAGE = "msg";
+    //public static final String TXT_ADDITIONAL_INFO_5_VALUE = "Normal";
+     // public static final String TXT_ADDITIONAL_INFO_6_VALUE = "Pending";
     /*['11594354','MPMKBHORAP','0355403000','http://www.mpcz.co.in/paymentAck','2424200','2429500','01-08-2015','Normal','Pending','0']
     *
 
@@ -31,6 +36,7 @@ public class TransactionInfo implements Serializable {
     txtAdditionalInfo5	Normal
     txtAdditionalInfo6	Pending
     */
+    private String mCustomerName;
     private String mRU = MPCZConstants.RU_ACKNOWLEDGMENT_VALUE;
     private String mBillerId = BillInfo.BILLER_ID_VALUE;
     private String mTxtCustomerID ;
@@ -41,7 +47,16 @@ public class TransactionInfo implements Serializable {
     private String mTxtAdditionalInfo4;
     private String mTxtAdditionalInfo5;
     private String mTxtAdditionalInfo6;
+    private String mMessage;
+    private String mBillDueDate;
 
+    public String getCustomerName() {
+        return mCustomerName;
+    }
+
+    public void setCustomerName(String aCustomerName) {
+        this.mCustomerName = aCustomerName;
+    }
     public String getRU() {
         return mRU;
     }
@@ -101,6 +116,56 @@ public class TransactionInfo implements Serializable {
     }
     public void setTxtAdditionalInfo6(String aTxtAdditionalInfo6) {
         this.mTxtAdditionalInfo6 = aTxtAdditionalInfo6;
+    }
+    public String getBillDueDate() {
+        return mBillDueDate;
+    }
+    public void setBillDueDate(String aBillDueDate) {
+        if(aBillDueDate != null){
+            try {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(new SimpleDateFormat("dd-MMM-yyyy").parse(aBillDueDate));
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                mBillDueDate = sdf.format(cal.getTime());
+
+            } catch (ParseException e)
+            { e.printStackTrace(); }
+        }
+    }
+   /*
+    MPMKBHOPAL|11610905|NA|0|NA|NA|NA|INR|NA|R|mpmkbhopal|NA|NA|F|9493692000|2424200|2429500|20-07-2015|2424205|
+    SWAMI SARAN SHARMA|TANSEN|http://www.mpcz.co.in/paymentAck|4068340746
+    */
+    public String getMessage(){
+        String SEPARATOR = "|";
+        String NOT_APPLICABLE = "NA";
+        String CURRENCY = "INR";
+
+        StringBuffer message = new StringBuffer();
+        message.append(mBillerId);message.append(SEPARATOR);
+        message.append(mTxtAdditionalInfo1);message.append(SEPARATOR);
+        message.append(NOT_APPLICABLE);message.append(SEPARATOR);
+        message.append(mTxnAmount);message.append(SEPARATOR);
+        message.append(NOT_APPLICABLE);message.append(SEPARATOR);
+        message.append(NOT_APPLICABLE);message.append(SEPARATOR);
+        message.append(NOT_APPLICABLE);message.append(SEPARATOR);
+        message.append(CURRENCY);message.append(SEPARATOR);
+        message.append(NOT_APPLICABLE);message.append(SEPARATOR);
+        message.append("R");message.append(SEPARATOR);
+        message.append(mBillerId.toLowerCase());message.append(SEPARATOR);
+        message.append(NOT_APPLICABLE);message.append(SEPARATOR);
+        message.append(NOT_APPLICABLE);message.append(SEPARATOR);
+        message.append("F");message.append(SEPARATOR);
+        message.append(mTxtCustomerID);message.append(SEPARATOR);
+        message.append(mTxtAdditionalInfo2);message.append(SEPARATOR);
+        message.append(mBillDueDate);message.append(SEPARATOR);
+        message.append("2424205");message.append(SEPARATOR);
+        message.append(mCustomerName);message.append(SEPARATOR);
+        message.append(mRU);message.append(SEPARATOR);
+        message.append("4068340746");
+        mMessage = message.toString();
+
+        return mMessage;
     }
     @Override
     public String toString() {

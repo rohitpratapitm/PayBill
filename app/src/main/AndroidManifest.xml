@@ -45,6 +45,10 @@
             android:name=".CreateAccount"
             android:label="@string/title_activity_create_account" >
         </activity>
+        <activity
+            android:name=".ProcessPayment"
+            android:label="@string/title_activity_process_payment" >
+        </activity>
     </application>
 
 </manifest>
