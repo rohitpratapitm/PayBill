@@ -6,13 +6,15 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by sikar on 8/1/2015.
  */
 public class TransactionInfo implements Serializable {
 
+    public static final String BILLER_ID = "billerid";
+    public static final String TXT_CUSTOMER_ID = "txtCustomerID";
+    public static final String TXT_AMOUNT = "txtTxnAmount";
     public static final String TXT_ADDITIONAL_INFO_1 = "txtAdditionalInfo1";
     public static final String TXT_ADDITIONAL_INFO_2 = "txtAdditionalInfo2";
     public static final String TXT_ADDITIONAL_INFO_3 = "txtAdditionalInfo3";

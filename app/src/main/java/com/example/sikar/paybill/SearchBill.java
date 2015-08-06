@@ -43,7 +43,6 @@ public class SearchBill extends Activity {
                 //Execute in back ground
                 SearchBillTask searchBillTask = new SearchBillTask(mContext);
                 searchBillTask.execute(accountId);
-               // Account account = searchBillTask.getResult();
             }
         });
     }

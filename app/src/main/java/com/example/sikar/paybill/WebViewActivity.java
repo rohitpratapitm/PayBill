@@ -8,7 +8,6 @@ import android.view.KeyEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.example.sikar.web.HttpPostTask;
 import com.example.sikar.web.HttpRequest;
 import com.example.sikar.web.MPCZConstants;
 import com.example.sikar.web.utils.MySession;
@@ -39,11 +38,6 @@ public class WebViewActivity extends Activity {
 		Map<String,String> headerParameters = new HashMap<String,String>();
 		headerParameters = initializeWithDefaults(headerParameters);
 		mWebView.loadUrl(url,headerParameters);
-		//http://www.mpcz.co.in/PaymentServlet?
-		// selectname=PaymentUpdation&_dc=1437991416092&accntId=9493692000&billerid=MPMKBHORAP&RU=http%3A%2F%2Fwww.mpcz.co.in%2FpaymentAck&chooseIdentifier=Account%20ID&
-		// amtToBePaid=0&outstandingAmt=0&customerName=SWAMI%20SARAN%20SHARMA&billId=184255954&lastBillAmt=0.00&currentBillAmt=408&billmon=JUL-2015&billissuedate=07-JUL-2015&
-		// billdueDate=20-JUL-2015&consAddres=Q.NO.30GOSPURA%20COLONY%2030%2FA%20TAN&city=TANSEN&mblNum=9346584202&payGateway=BILLDESK&emailId=rohitpratapitm%40gmail.com
-		//mWebView.loadUrl("http://www.mpcz.co.in/portal/Bhopal_home.portal?_nfpb=true&_pageLabel=custCentre_OBP_bpl",headerParameters);
 	}
 
 	@Override

@@ -106,6 +106,7 @@ public class JSONResponseHandler  {
             transactionInfo.setTxtAdditionalInfo4(transactionValues[6]);
             transactionInfo.setTxtAdditionalInfo5(transactionValues[7]);
             transactionInfo.setTxtAdditionalInfo6(transactionValues[8]);
+            transactionInfo.setTxnAmount(transactionValues[9]);
         }
 
         return transactionInfo;

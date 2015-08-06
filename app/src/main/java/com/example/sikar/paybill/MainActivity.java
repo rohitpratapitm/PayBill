@@ -1,51 +1,55 @@
 package com.example.sikar.paybill;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends Activity {
 
-    private TextView mTextView;
-
-    @Override
+    private Context mContext;
+       @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button newAccountButton = (Button)findViewById(R.id.new_account);
-        newAccountButton.setOnClickListener(new View.OnClickListener() {
+        mContext = this.getApplicationContext();
+
+        Button showAccountsButton = (Button)findViewById(R.id.show_accounts);
+        showAccountsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent createNewAccount = new Intent(MainActivity.this,CreateAccount.class);
-                startActivity(createNewAccount);
+                ReadAccountsFromDiskTask readAccountsFromDiskTask = new ReadAccountsFromDiskTask(mContext);
+                readAccountsFromDiskTask.execute();
             }
         });
-        //1. Fetch existing records
+        /*//1. Fetch existing records
         Account existingRecord = readRecord();
 
         //2. Show this on layout
         if(existingRecord != null){
-            Intent showBillIntent = new Intent(MainActivity.this,ShowBill.class);
+            Intent showBillIntent = new Intent(MainActivity.this,MyListView.class);
             showBillIntent.putExtra("Account",existingRecord);
             startActivity(showBillIntent);
-        }else{
+        }/*else{
             Intent searchBillIntent = new Intent(MainActivity.this,SearchBill.class);
             startActivity(searchBillIntent);
-        }
+        }*/
 
     }
 
@@ -70,33 +74,53 @@ public class MainActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+    public class ReadAccountsFromDiskTask extends AsyncTask<Void,Void,List<Account>> {
 
-    private Account readRecord()  {
-        String FILENAME = "account_info";
-        String string = "hello world!";
-        Account account = null;
+        private static final String FILENAME = "account_info";
 
-        FileInputStream fis = null;
-        ObjectInputStream ois = null;
-        try {
+        private final ArrayList<Account> mAccounts;
+        private final Context mContext;
 
-            fis = openFileInput(FILENAME);
-            ois = new ObjectInputStream(fis);
-            account = (Account)ois.readObject();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally{
-            try {
-                if(ois !=null)ois.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        public ReadAccountsFromDiskTask(Context aContext){
+            this.mContext = aContext;
+            this.mAccounts = new ArrayList<Account>();
         }
-        return account;
+        @Override
+        protected List<Account> doInBackground(Void... params) {
+            {
+                Account account = null;
+
+                FileInputStream fis = null;
+                ObjectInputStream ois = null;
+                try {
+                    fis = openFileInput(FILENAME);
+                    ois = new ObjectInputStream(fis);
+                    while((account = (Account)ois.readObject())!=null)
+                        mAccounts.add(account);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } finally{
+                    try {
+                        if(ois !=null)ois.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return mAccounts;
+        }
+
+        @Override
+        protected void onPostExecute(List<Account> accounts) {
+
+            Intent showAccountsIntent = new Intent(mContext,ShowAccounts.class);
+            showAccountsIntent.putExtra("Accounts", mAccounts);
+            showAccountsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(showAccountsIntent);
+        }
     }
 }

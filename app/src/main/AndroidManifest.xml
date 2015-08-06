@@ -49,6 +49,14 @@
             android:name=".ProcessPayment"
             android:label="@string/title_activity_process_payment" >
         </activity>
+        <activity
+            android:name=".MyListView"
+            android:label="@string/title_activity_my_list_view" >
+        </activity>
+        <activity
+            android:name=".ShowAccounts"
+            android:label="@string/title_activity_show_accounts" >
+        </activity>
     </application>
 
 </manifest>

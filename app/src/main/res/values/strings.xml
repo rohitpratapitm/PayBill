@@ -10,6 +10,8 @@
     <string name="title_activity_pay_bill">PayBill</string>
     <string name="title_activity_create_account">CreateAccount</string>
     <string name="title_activity_process_payment">ProcessPayment</string>
+    <string name="title_activity_my_list_view">MyListView</string>
+    <string name="title_activity_show_accounts">ShowAccounts</string>
 
 
 </resources>

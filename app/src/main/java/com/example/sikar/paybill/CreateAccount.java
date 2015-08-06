@@ -2,6 +2,7 @@ package com.example.sikar.paybill;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,8 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.sikar.web.HttpPostTask;
-
-import org.apache.http.client.methods.HttpPost;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -22,11 +21,15 @@ import java.util.concurrent.ExecutionException;
 
 public class CreateAccount extends Activity {
 
+    private Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
 
+        mContext = this.getApplicationContext();
         //Get Accound Id
         final EditText accountIdView = (EditText)findViewById(R.id.account_id);
 
@@ -48,6 +51,8 @@ public class CreateAccount extends Activity {
                 Account newAccount = null;
                 try{
                     //verify and Save Info
+                    Intent searchBillIntent = new Intent(mContext,SearchBill.class);
+
                     HttpPostTask asyncTask = new HttpPostTask(CreateAccount.this);
                     //execute the task
                     asyncTask.execute(accountId);

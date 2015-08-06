@@ -2,21 +2,16 @@ package com.example.sikar.paybill;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.sikar.web.HttpPostTask;
 import com.example.sikar.web.HttpRequest;
-import com.example.sikar.web.JSONResponseHandler;
 import com.example.sikar.web.MPCZConstants;
-import com.example.sikar.web.utils.MySession;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,9 +19,8 @@ import java.util.Map;
 
 public class PayBill extends Activity {
 
-    private Account mAccount;
+    private TransactionInfo mTransactionInfo;
     private Context mContext ;
-    private WebView mWebView;
     private EditText mStatusView;
 
     @Override
@@ -37,21 +31,18 @@ public class PayBill extends Activity {
 
         mContext = this.getApplicationContext();
 
+        mTransactionInfo = (TransactionInfo)getIntent().getExtras().get("TransactionInfo");
+
         mStatusView = (EditText)findViewById(R.id.status);
-        mWebView = (WebView)findViewById(R.id.webview);
-
-        mAccount = (Account)getIntent().getExtras().get("Account");
-
-        PayBillTask payBillTask = new PayBillTask(mAccount);
-        payBillTask.execute();
+        mStatusView.setText(mTransactionInfo.getMessage());
 
         Button confirmButton = (Button)findViewById(R.id.confirm);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent paymentIntent = new Intent(mContext,ProcessPayment.class);
-                startActivity(paymentIntent);
+                ProcessPaymentTask processPaymentTask = new ProcessPaymentTask(mTransactionInfo);
+                processPaymentTask.execute();
             }
         });
     }
@@ -77,73 +68,49 @@ public class PayBill extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+    public class ProcessPaymentTask extends AsyncTask<Void,Void,String>{
 
-    class PayBillTask extends AsyncTask<String,Void,TransactionInfo> {
+        public static final String PAYMENT_GATEWAY_URL = "https://www.billdesk.com/pgidsk/PGIMerchantPayment";
+        private final TransactionInfo mTransactionInfo;
+        private final Map<String,String> mQueryParameters;
 
-        private Map<String,String> mQueryParameters;
-        private TransactionInfo mTransactionInfo;
-        private Account mAccount;
 
-        public PayBillTask(Account aAccount){
-            mAccount = aAccount;
+        public ProcessPaymentTask(TransactionInfo aTransactionInfo){
+            mTransactionInfo = aTransactionInfo;
+            mQueryParameters = new HashMap<String,String>();
+            initializeQueryParameters();
         }
 
         @Override
-        protected TransactionInfo doInBackground(String... params) {
+        protected String doInBackground(Void... params) {
 
-            mQueryParameters = initializeQueryParameters();
-            HttpRequest httpGETRequest = new HttpRequest(MPCZConstants.PAYMENT_SCREEN,HttpRequest.HTTP_REQUEST_TYPE.GET,mQueryParameters);
-            httpGETRequest.setCookie(MySession.getSessionCookie());
-            String httpGETResponse = httpGETRequest.sendGETRequest();
-
-            JSONResponseHandler handler = new JSONResponseHandler();
-
-            mTransactionInfo = handler.handleTransactionResponse(httpGETResponse);
-            mTransactionInfo.setCustomerName(mAccount.getCustomerName());
-            return mTransactionInfo;
+            HttpRequest postRequest = new HttpRequest(PAYMENT_GATEWAY_URL, HttpRequest.HTTP_REQUEST_TYPE.POST,mQueryParameters);
+            String response = postRequest.sendPOSTRequest(mQueryParameters);
+            String location = postRequest.getHeaderField("Location");
+            String cookie = postRequest.getHeaderField("Set-Cookie");
+            return location;
         }
 
         @Override
-        protected void onPostExecute(TransactionInfo aTransactionInfo) {
-            //mWebView.loadUrl(MPCZConstants.PAYMENT_SCREEN,mQueryParameters);
-            mStatusView.setText(mTransactionInfo.getTxtAdditionalInfo6());
+        protected void onPostExecute(String aLocation) {
+            System.out.println(aLocation);
         }
 
         private Map<String,String> initializeQueryParameters(){
 
+            mQueryParameters.put(MPCZConstants.RU,MPCZConstants.RU_ACKNOWLEDGMENT_VALUE);
+            mQueryParameters.put(TransactionInfo.BILLER_ID,mTransactionInfo.getBillerId());
+            mQueryParameters.put(TransactionInfo.TXT_CUSTOMER_ID,mTransactionInfo.getTxtCustomerID());
+            mQueryParameters.put(TransactionInfo.TXT_AMOUNT,mTransactionInfo.getTxnAmount());
+            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_1,mTransactionInfo.getTxtAdditionalInfo1());
+            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_2,mTransactionInfo.getTxtAdditionalInfo2());
+            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_3,mTransactionInfo.getTxtAdditionalInfo3());
+            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_4,mTransactionInfo.getTxtAdditionalInfo4());
+            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_5,mTransactionInfo.getTxtAdditionalInfo5());
+            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_6,mTransactionInfo.getTxtAdditionalInfo6());
+            mQueryParameters.put(TransactionInfo.MESSAGE,mTransactionInfo.getMessage());
 
-            BillInfo billInfo = mAccount.getBillInfo();
-
-            Map<String,String> queryParameters = new HashMap<String,String>();
-            //Constant properties
-            queryParameters.put(MPCZConstants.POST_CHOOSE_IDENTIFIER, MPCZConstants.POST_CHOOSE_IDENTIFIER_VALUE);
-            queryParameters.put(BillInfo.BILLER_ID,BillInfo.BILLER_ID_VALUE);
-            queryParameters.put(MPCZConstants.RU,MPCZConstants.RU_ACKNOWLEDGMENT_VALUE);
-            queryParameters.put(MPCZConstants.PAYMENT_GATEWAY,MPCZConstants.PAYMENT_GATEWAY_VALUE);
-            queryParameters.put(MPCZConstants.SELECT_NAME,MPCZConstants.SELET_NAME_VALUE);
-
-            //Account properties
-            queryParameters.put(HttpPostTask.POST_ACCOUNT_ID,mAccount.getAccountId());
-            queryParameters.put(Account.CUSTOMER_NAME,mAccount.getCustomerName());
-            //queryParameters.put(Account.ADDRESS,mAccount.getAddress());
-            queryParameters.put("consAddres",mAccount.getAddress());
-            //queryParameters.put(Account.CITY,mAccount.getCity());
-            queryParameters.put("city",mAccount.getCity());
-            queryParameters.put(Account.MOBILE_NO,mAccount.getMobileNumber());
-            queryParameters.put(Account.EMAIL_ID,mAccount.getEmailId());
-            //Bill properties
-            queryParameters.put(BillInfo.BILL_ID,billInfo.getBillId());
-            queryParameters.put(BillInfo.AMT_TO_BE_PAID,billInfo.getAmtToBePaid());
-            queryParameters.put(BillInfo.OUTSTANDING_AMT,billInfo.getOutStandingAmt());
-            queryParameters.put(BillInfo.LAST_BILL_AMT,billInfo.getLastBillAmt());
-            queryParameters.put(BillInfo.CURRENT_BILL_AMT,billInfo.getCurrentBillAmt());
-            //queryParameters.put(BillInfo.MONTH,billInfo.getBillMonth());
-            queryParameters.put("billMon",billInfo.getBillMonth());
-            queryParameters.put(BillInfo.ISSUE_DATE,billInfo.getBillIssueDate());
-            queryParameters.put("billdueDate",billInfo.getBillDueDate());
-
-            return queryParameters;
-
+            return mQueryParameters;
         }
     }
 }

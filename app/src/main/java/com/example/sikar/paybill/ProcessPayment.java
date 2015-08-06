@@ -12,6 +12,8 @@ public class ProcessPayment extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_process_payment);
+
+
     }
 
     @Override
@@ -35,4 +37,5 @@ public class ProcessPayment extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

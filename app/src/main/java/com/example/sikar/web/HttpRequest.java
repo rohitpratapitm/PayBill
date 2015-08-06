@@ -1,7 +1,6 @@
 package com.example.sikar.web;
 
 import com.example.sikar.web.utils.HttpUtils;
-import com.example.sikar.web.utils.MySession;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -35,7 +34,7 @@ public class HttpRequest {
     public static final String HEADER_HOST = "Host";
     public static final String DEFAULT_USER_AGENT = "Mozilla/5.0";
 
-    public enum  HTTP_REQUEST_TYPE{GET,POST}
+    public enum  HTTP_REQUEST_TYPE{GET,POST,CONNECT}
 
 
     private  HttpURLConnection mConnection;
@@ -122,8 +121,6 @@ public class HttpRequest {
             aProtocolException.printStackTrace();
         } catch (IOException aIOException) {
             aIOException.printStackTrace();
-        }finally {
-            mConnection.disconnect();
         }
         return null;
     }
@@ -155,7 +152,7 @@ public class HttpRequest {
         mConnection.setRequestProperty(HEADER_X_REQUESTED_WITH, "XMLHttpRequest");
         mConnection.setRequestProperty(HEADER_CONNECTION, "keep-alive");
         mConnection.setRequestProperty(HEADER_REFERER, MPCZConstants.HOME_SCREEN);
-        mConnection.setRequestProperty(HEADER_HOST, "www.mpcz.co.in");
+        mConnection.setRequestProperty(HEADER_HOST, mURL.getHost());
         mConnection.setRequestProperty(HEADER_CONTENT_TYPE, "application/x-www-form-urlencoded; charset=UTF-8");
 
     }

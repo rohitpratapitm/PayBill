@@ -3,7 +3,6 @@ package com.example.sikar.web.utils;
 import com.example.sikar.web.HttpRequest;
 import com.example.sikar.web.MPCZConstants;
 
-import java.net.HttpURLConnection;
 import java.util.Map;
 
 /**

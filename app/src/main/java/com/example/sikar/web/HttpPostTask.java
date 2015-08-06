@@ -18,10 +18,6 @@ import java.util.HashMap;
 
 public class HttpPostTask extends AsyncTask<String,Void,Account> {
 
-    public static final String POST_ACCOUNT_ID = "accntId";
-    public static final String POST_CHOOSE_IDENTIFIER = "chooseIdentifier";
-    public static final String POST_CHOOSE_IDENTIFIER_VALUE = "Account ID";
-
     private String mSessionCookie;
     Activity mActivity;
 
@@ -38,8 +34,8 @@ public class HttpPostTask extends AsyncTask<String,Void,Account> {
 
         //1.Make a POST Request and send account Id as parameter
         HashMap<String,String> postQueryParameters = new HashMap<String,String>();
-        postQueryParameters.put(POST_CHOOSE_IDENTIFIER, POST_CHOOSE_IDENTIFIER_VALUE);
-        postQueryParameters.put(POST_ACCOUNT_ID, params[0]);
+        postQueryParameters.put(MPCZConstants.POST_CHOOSE_IDENTIFIER, MPCZConstants.POST_CHOOSE_IDENTIFIER_VALUE);
+        postQueryParameters.put(MPCZConstants.POST_ACCOUNT_ID, params[0]);
 
         HttpRequest httpPOSTRequest = new HttpRequest(MPCZConstants.LOGIN_SCREEN, HttpRequest.HTTP_REQUEST_TYPE.POST,postQueryParameters);
         httpPOSTRequest.setCookie(mSessionCookie);
