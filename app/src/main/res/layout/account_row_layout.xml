@@ -13,10 +13,10 @@
         android:outlineProvider="bounds" />
 
     <TextView
-        android:layout_width="204dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
+        android:text="Small Text"
         android:id="@+id/mycustomerName"
         android:layout_weight="0.06" />
 

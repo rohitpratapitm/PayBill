@@ -51,12 +51,17 @@ public class ShowAccounts extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
-                final String item = (String) parent.getItemAtPosition(position);
+                final Account account = (Account) parent.getItemAtPosition(position);
                 view.animate().setDuration(2000).alpha(0)
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
                                 //list.remove(item);
+                                Intent showBillIntent = new Intent(mContext, ShowBill.class);
+                                showBillIntent.putExtra("Account", account);
+                                showBillIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                mContext.startActivity(showBillIntent);
+
                                 adapter.notifyDataSetChanged();
                                 view.setAlpha(1);
                             }

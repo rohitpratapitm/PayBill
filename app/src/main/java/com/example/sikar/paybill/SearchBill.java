@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.sikar.web.HttpRequest;
-import com.example.sikar.web.JSONResponseHandler;
+import com.example.sikar.web.ResponseHandler;
 import com.example.sikar.web.MPCZConstants;
 import com.example.sikar.web.utils.MySession;
 
@@ -97,7 +97,7 @@ public class SearchBill extends Activity {
              httpPOSTRequest.setCookie(mSessionCookie);
              String httpPOSTResponse = httpPOSTRequest.sendPOSTRequest(postQueryParameters);
 
-             JSONResponseHandler responseHandler = new JSONResponseHandler();
+             ResponseHandler responseHandler = new ResponseHandler();
              try {
                  mAccount = responseHandler.handleAccountResponse(httpPOSTResponse);
              } catch (IOException aIOException) {

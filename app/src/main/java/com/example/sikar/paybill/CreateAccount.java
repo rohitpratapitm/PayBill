@@ -12,16 +12,22 @@ import android.widget.EditText;
 
 import com.example.sikar.web.HttpPostTask;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OptionalDataException;
+import java.io.StreamCorruptedException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 
 public class CreateAccount extends Activity {
 
     private Context mContext;
+    private static int mNumberOfRecords;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,33 +77,59 @@ public class CreateAccount extends Activity {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
-                }catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
         });
     }
 
-    private void saveInfo(Account aAccount) throws IOException {
-        String FILENAME = "account_info";
-        String string = "hello world!";
+    private void saveInfo(Account aAccount)  {
 
         FileOutputStream fos = null;
+        FileInputStream fis = null;
         ObjectOutputStream oos = null;
+        ObjectInputStream ois = null;
+        ArrayList<Account> accounts = null;
+
+
         try {
-
-            fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject(aAccount);
-            oos.flush();
-
+            fis = openFileInput(Account.FILENAME);
+            ois = new ObjectInputStream(fis);
+            accounts = (ArrayList<Account>)ois.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (StreamCorruptedException e) {
+            e.printStackTrace();
+        } catch (OptionalDataException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally{
-            oos.close();
+        }finally {
+            try {
+                if(accounts == null){
+                    accounts = new ArrayList<Account>();
+                }
+                accounts.add(aAccount);
+                fos = openFileOutput(Account.FILENAME, Context.MODE_PRIVATE);
+                oos = new ObjectOutputStream(fos);
+
+                oos.writeObject(accounts);
+                oos.flush();
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally{
+                try {
+                    oos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

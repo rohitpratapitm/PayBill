@@ -15,6 +15,8 @@ public class Account implements Serializable{
     public static final String MOBILE_NO = "mblNum";
     public static final String EMAIL_ID = "emailId";
 
+    public static final String FILENAME = "SavedAccount3";
+
     private  String mAccountId;
     private  String mConnectionNo;
     private  String mCustomerName;

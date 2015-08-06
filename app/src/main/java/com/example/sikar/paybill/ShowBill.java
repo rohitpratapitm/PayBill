@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.sikar.web.HttpRequest;
-import com.example.sikar.web.JSONResponseHandler;
+import com.example.sikar.web.ResponseHandler;
 import com.example.sikar.web.MPCZConstants;
 import com.example.sikar.web.utils.MySession;
 
@@ -104,7 +104,7 @@ public class ShowBill extends Activity {
             httpGETRequest.setCookie(MySession.getSessionCookie());
             String httpGETResponse = httpGETRequest.sendGETRequest();
 
-            JSONResponseHandler handler = new JSONResponseHandler();
+            ResponseHandler handler = new ResponseHandler();
 
             mTransactionInfo = handler.handleTransactionResponse(httpGETResponse);
             mTransactionInfo.setCustomerName(mAccount.getCustomerName());

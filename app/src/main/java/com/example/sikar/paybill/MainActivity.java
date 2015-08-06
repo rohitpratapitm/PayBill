@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
 
         //2. Show this on layout
         if(existingRecord != null){
-            Intent showBillIntent = new Intent(MainActivity.this,MyListView.class);
+            Intent showBillIntent = new Intent(MainActivity.this,ShowBill.class);
             showBillIntent.putExtra("Account",existingRecord);
             startActivity(showBillIntent);
         }/*else{
@@ -76,9 +76,9 @@ public class MainActivity extends Activity {
     }
     public class ReadAccountsFromDiskTask extends AsyncTask<Void,Void,List<Account>> {
 
-        private static final String FILENAME = "account_info";
 
-        private final ArrayList<Account> mAccounts;
+
+        private ArrayList<Account> mAccounts;
         private final Context mContext;
 
         public ReadAccountsFromDiskTask(Context aContext){
@@ -88,22 +88,27 @@ public class MainActivity extends Activity {
         @Override
         protected List<Account> doInBackground(Void... params) {
             {
-                Account account = null;
-
                 FileInputStream fis = null;
                 ObjectInputStream ois = null;
                 try {
-                    fis = openFileInput(FILENAME);
+                    fis = mContext.openFileInput(Account.FILENAME);
                     ois = new ObjectInputStream(fis);
-                    while((account = (Account)ois.readObject())!=null)
+                    mAccounts = (ArrayList<Account>)ois.readObject();
+                    //Integer noOfRecords = ois.readInt();
+
+                    /*Account account = null;
+                    while((account = (Account)ois.readObject()) != null){
+                        //
                         mAccounts.add(account);
+                    }*/
+
                 } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } finally{
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } finally{
                     try {
                         if(ois !=null)ois.close();
                     } catch (IOException e) {
@@ -115,7 +120,7 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        protected void onPostExecute(List<Account> accounts) {
+        protected void onPostExecute(List<Account> aAccounts) {
 
             Intent showAccountsIntent = new Intent(mContext,ShowAccounts.class);
             showAccountsIntent.putExtra("Accounts", mAccounts);

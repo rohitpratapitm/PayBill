@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * Created by sikar on 7/22/2015.
  */
-public class JSONResponseHandler  {
+public class ResponseHandler {
 
     private static final String SUCCESS = "success";
     private static final String FAILURE = "failure";

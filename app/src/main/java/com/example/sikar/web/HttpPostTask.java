@@ -41,7 +41,7 @@ public class HttpPostTask extends AsyncTask<String,Void,Account> {
         httpPOSTRequest.setCookie(mSessionCookie);
         String httpPOSTResponse = httpPOSTRequest.sendPOSTRequest(postQueryParameters);
 
-        JSONResponseHandler responseHandler = new JSONResponseHandler();
+        ResponseHandler responseHandler = new ResponseHandler();
         try{
             account = responseHandler.handleAccountResponse(httpPOSTResponse);
         }catch (IOException aIOException){

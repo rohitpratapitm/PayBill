@@ -14,6 +14,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,33 +41,9 @@ public class HttpRequest {
     private  HttpURLConnection mConnection;
     private  URL mURL;
     private  String mCookie;
-    private String mResponse;
+    private  String mResponse;
 
 
-    private HttpRequest(String aURL){
-        try{
-            mURL = new URL(aURL);
-            mConnection = (HttpURLConnection)mURL.openConnection();
-            mConnection.setRequestProperty(HEADER_USER_AGENT,DEFAULT_USER_AGENT);
-//            mCookieManager = new CookieManager();
-//            mCookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
-//            CookieHandler.setDefault(mCookieManager);
-
-        }catch (MalformedURLException aMalformedURLException){
-            aMalformedURLException.printStackTrace();
-        }catch (IOException aIOException){
-            aIOException.printStackTrace();
-        }
-    }
-
-    private HttpRequest(URL aURL){
-        try{
-            mURL = aURL;
-            mConnection = (HttpURLConnection)mURL.openConnection();
-        }catch (IOException aIOException) {
-            aIOException.printStackTrace();
-        }
-    }
     public HttpRequest(String aHost,HTTP_REQUEST_TYPE aRequestType,Map<String,String> aQueryParameters){
         try{
             String url;
@@ -198,5 +175,23 @@ private String convertInputStreamToString(InputStream aInputStream) {
                 iOException.printStackTrace();
             }
         }
+    }
+
+
+    public Map<String,String> initializeHeaderWithDefaults(){
+
+        HashMap<String,String> header = new HashMap<String,String>();
+
+        header.put(HEADER_ACCEPT, "*/*");
+        header.put(HEADER_ACCEPT_ENCODING, "gzip, deflate");
+        header.put(HEADER_COOKIE, mCookie);
+        header.put(HEADER_USER_AGENT, "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36");
+        header.put(HEADER_ACCEPT_LANGUAGE, "en-US,en;q=0.8,hi;q=0.6");
+        header.put(HEADER_X_REQUESTED_WITH, "XMLHttpRequest");
+        header.put(HEADER_CONNECTION, "keep-alive");
+        header.put(HEADER_REFERER, MPCZConstants.HOME_SCREEN);
+        header.put(HEADER_HOST, "www.mpcz.co.in");
+        header.put(HEADER_CONTENT_TYPE, "application/x-www-form-urlencoded; charset=UTF-8");
+        return header;
     }
 }
