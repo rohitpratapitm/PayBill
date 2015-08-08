@@ -18,6 +18,8 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Small Text"
         android:id="@+id/mycustomerName"
-        android:layout_weight="0.06" />
+        android:layout_weight="0.06"
+        android:textColor="#ffff8a34"
+        android:outlineProvider="paddedBounds" />
 
 </LinearLayout>

@@ -22,7 +22,7 @@
         <activity
             android:name=".WebViewActivity"
             android:label="WebView" >
-            <action android:name="android.intent.action.VIEW" />
+           <!-- <action android:name="android.intent.action.VIEW" />-->
 
             <uses-permission android:name="android.permission.INTERNET" />
         </activity>

@@ -10,98 +10,113 @@
 
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@android:style/TextAppearance.Material.Large"
-        android:id="@+id/customer_name"
-
-        android:labelFor="@id/customer_name"
-
-        android:layout_below="@+id/name"
-        android:layout_alignParentStart="true" />
-
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pay Bill"
-        android:id="@+id/pay_bill"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:id="@+id/account_number"
-        android:layout_below="@+id/accountnumber"
-        android:layout_alignParentStart="true"
-        android:textAppearance="@android:style/TextAppearance.Material.Large" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Customer Name"
-        android:id="@+id/name"
-        android:layout_alignParentStart="true"
+        android:id="@+id/label_customer_name"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:inputType="none" />
+        android:layout_alignParentStart="true"
+        android:textColor="#ff000000" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/customer_name"
+        android:layout_below="@+id/label_customer_name"
+        android:layout_alignParentStart="true"
+        android:singleLine="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Account Number"
-        android:id="@+id/accountnumber"
-        android:inputType="none"
+        android:id="@+id/label_account_number"
+        android:layout_marginTop="23dp"
+        android:textColor="#ff000000"
         android:layout_below="@+id/customer_name"
         android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/account_number"
+        android:layout_below="@+id/label_account_number"
+        android:layout_alignParentStart="true"
+        android:singleLine="false"
+        android:hint="10 Digit account number" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Bill Amount"
-        android:id="@+id/billamount"
-        android:inputType="none"
+        android:id="@+id/label_bill_amount"
         android:layout_below="@+id/account_number"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="25dp"
+        android:textColor="#ff000000" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/bill_amount"
-        android:layout_below="@+id/billamount"
+        android:layout_below="@+id/label_bill_amount"
         android:layout_alignParentStart="true"
-        android:selectAllOnFocus="false"
-        android:textAppearance="@android:style/TextAppearance.Material.Large" />
+        android:layout_alignParentEnd="true"
+        android:hint="Amount to be paid"
+        android:textColor="#FF000000" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Due Date"
-        android:id="@+id/duedate"
-        android:inputType="none"
+        android:id="@+id/label_due_date"
+        android:layout_marginTop="24dp"
         android:layout_below="@+id/bill_amount"
         android:layout_alignParentStart="true"
-        android:visibility="visible"
-        android:singleLine="false" />
+        android:textColor="#FF000000" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/due_date"
-        android:selectAllOnFocus="true"
-        android:layout_below="@+id/duedate"
+        android:layout_below="@+id/label_due_date"
         android:layout_alignParentStart="true"
-        android:textAppearance="@android:style/TextAppearance.Material.Large" />
+        android:hint="Last date " />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Mobile Number"
+        android:id="@+id/label_mobile_number"
+        android:layout_marginTop="23dp"
+        android:layout_below="@+id/due_date"
+        android:layout_alignParentStart="true"
+        android:textColor="#FF000000" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Mobile number of the customer"
+        android:id="@+id/mobile_number"
+        android:layout_below="@+id/label_mobile_number"
+        android:layout_alignParentStart="true"
+        android:textColor="#FF000000" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pay Bill"
+        android:id="@+id/button_pay_bill"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/label_mobile_number" />
 </RelativeLayout>

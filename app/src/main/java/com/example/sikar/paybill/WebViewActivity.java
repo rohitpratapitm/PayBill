@@ -19,7 +19,7 @@ import java.util.Map;
 public class WebViewActivity extends Activity {
 
 	private WebView mWebView;
-	private Account mAccount;
+	private TransactionInfo mTransactionInfo;
 
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
@@ -27,18 +27,18 @@ public class WebViewActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		mAccount = (Account)getIntent().getExtras().get("Account");
+		mTransactionInfo = (TransactionInfo)getIntent().getExtras().get("TransactionInfo");
 		mWebView = (WebView) findViewById(R.id.webview);
 
 		mWebView.setWebViewClient(new HelloWebViewClient());
 
 		mWebView.getSettings().setJavaScriptEnabled(true);
 
-		Map<String,String> queryParameters = initializeQueryParameters();
-		String url = HttpUtils.addQueryParametersToURL(MPCZConstants.PAYMENT_SCREEN,queryParameters);
+		Map<String,String> queryParameters = initializeTransactionInfoQueryParameters();
 		Map<String,String> headerParameters = new HashMap<String,String>();
 		headerParameters = initializeWithDefaults(headerParameters);
-		mWebView.loadUrl(url,headerParameters);
+
+		mWebView.postUrl(MPCZConstants.BILLDESK_PAYMENT_URL,HttpUtils.convertQueryParametersToString(queryParameters).getBytes());
 	}
 
 	@Override
@@ -53,14 +53,7 @@ public class WebViewActivity extends Activity {
 	private class HelloWebViewClient extends WebViewClient {
 		private static final String TAG = "HelloWebViewClient";;
 
-		// Give application a chance to catch additional URL loading requests
-		@Override
-		public boolean shouldOverrideUrlLoading(WebView view, String url) {
-			Log.i(TAG, "About to load:" + url);
-			view.loadUrl(url);
-			return true;
-		}
-	}
+			}
 	private Map<String,String> initializeWithDefaults(Map<String,String> aHeaderParameters){
 
 		aHeaderParameters.put(HttpRequest.HEADER_ACCEPT, "*/*");
@@ -74,7 +67,7 @@ public class WebViewActivity extends Activity {
 		aHeaderParameters.put(HttpRequest.HEADER_HOST, "www.mpcz.co.in");
 		aHeaderParameters.put(HttpRequest.HEADER_CONTENT_TYPE, "application/x-www-form-urlencoded; charset=UTF-8");
 		return aHeaderParameters;
-	}
+	}/*
 	private Map<String,String> initializeQueryParameters(){
 
 
@@ -110,5 +103,24 @@ public class WebViewActivity extends Activity {
 
 		return queryParameters;
 
+	}*/
+	private Map<String,String> initializeTransactionInfoQueryParameters(){
+
+		Map<String,String> transactionInfoQueryParameters = new HashMap<String,String>();
+
+		transactionInfoQueryParameters.put(MPCZConstants.RU, MPCZConstants.RU_ACKNOWLEDGMENT_VALUE);
+		transactionInfoQueryParameters.put(TransactionInfo.BILLER_ID, mTransactionInfo.getBillerId());
+		transactionInfoQueryParameters.put(TransactionInfo.TXT_CUSTOMER_ID, mTransactionInfo.getTxtCustomerID());
+		transactionInfoQueryParameters.put(TransactionInfo.TXT_AMOUNT, mTransactionInfo.getTxnAmount());
+		transactionInfoQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_1, mTransactionInfo.getTxtAdditionalInfo1());
+		transactionInfoQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_2, mTransactionInfo.getTxtAdditionalInfo2());
+		transactionInfoQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_3, mTransactionInfo.getTxtAdditionalInfo3());
+		transactionInfoQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_4, mTransactionInfo.getTxtAdditionalInfo4());
+		transactionInfoQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_5, mTransactionInfo.getTransactionType());
+		transactionInfoQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_6, mTransactionInfo.getTransactionStatus());
+		transactionInfoQueryParameters.put(TransactionInfo.MESSAGE, mTransactionInfo.getMessage());
+
+		System.out.println(transactionInfoQueryParameters);
+		return transactionInfoQueryParameters;
 	}
 }

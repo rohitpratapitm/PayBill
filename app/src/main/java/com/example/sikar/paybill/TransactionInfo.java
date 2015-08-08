@@ -47,8 +47,8 @@ public class TransactionInfo implements Serializable {
     private String mTxtAdditionalInfo2;
     private String mTxtAdditionalInfo3;
     private String mTxtAdditionalInfo4;
-    private String mTxtAdditionalInfo5;
-    private String mTxtAdditionalInfo6;
+    private String mTransactionType;
+    private String mTransactionStatus;
     private String mMessage;
     private String mBillDueDate;
 
@@ -78,7 +78,9 @@ public class TransactionInfo implements Serializable {
         this.mTxtCustomerID = aTxtCustomerID;
     }
     public String getTxnAmount() {
-        return mTxnAmount;
+        Double txtAmountDouble = Double.parseDouble(mTxnAmount);
+        Integer txtAmountInteger = txtAmountDouble.intValue();
+        return txtAmountInteger.toString();
     }
     public void setTxnAmount(String aTxnAmount) {
         this.mTxnAmount = aTxnAmount;
@@ -107,17 +109,17 @@ public class TransactionInfo implements Serializable {
     public void setTxtAdditionalInfo4(String aTxtAdditionalInfo4) {
         this.mTxtAdditionalInfo4 = aTxtAdditionalInfo4;
     }
-    public String getTxtAdditionalInfo5() {
-        return mTxtAdditionalInfo5;
+    public String getTransactionType() {
+        return mTransactionType;
     }
     public void setTxtAdditionalInfo5(String aTxtAdditionalInfo5) {
-        this.mTxtAdditionalInfo5 = aTxtAdditionalInfo5;
+        this.mTransactionType = aTxtAdditionalInfo5;
     }
-    public String getTxtAdditionalInfo6() {
-        return mTxtAdditionalInfo6;
+    public String getTransactionStatus() {
+        return mTransactionStatus;
     }
     public void setTxtAdditionalInfo6(String aTxtAdditionalInfo6) {
-        this.mTxtAdditionalInfo6 = aTxtAdditionalInfo6;
+        this.mTransactionStatus = aTxtAdditionalInfo6;
     }
     public String getBillDueDate() {
         return mBillDueDate;
@@ -142,9 +144,9 @@ public class TransactionInfo implements Serializable {
         String SEPARATOR = "|";
         String NOT_APPLICABLE = "NA";
         String CURRENCY = "INR";
-
+        String billerId = "MPMKBHOPAL";
         StringBuffer message = new StringBuffer();
-        message.append(mBillerId);message.append(SEPARATOR);
+        message.append(billerId);message.append(SEPARATOR);
         message.append(mTxtAdditionalInfo1);message.append(SEPARATOR);
         message.append(NOT_APPLICABLE);message.append(SEPARATOR);
         message.append(mTxnAmount);message.append(SEPARATOR);
@@ -154,7 +156,7 @@ public class TransactionInfo implements Serializable {
         message.append(CURRENCY);message.append(SEPARATOR);
         message.append(NOT_APPLICABLE);message.append(SEPARATOR);
         message.append("R");message.append(SEPARATOR);
-        message.append(mBillerId.toLowerCase());message.append(SEPARATOR);
+        message.append(billerId.toLowerCase());message.append(SEPARATOR);
         message.append(NOT_APPLICABLE);message.append(SEPARATOR);
         message.append(NOT_APPLICABLE);message.append(SEPARATOR);
         message.append("F");message.append(SEPARATOR);

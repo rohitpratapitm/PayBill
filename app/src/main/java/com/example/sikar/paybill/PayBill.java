@@ -2,6 +2,8 @@ package com.example.sikar.paybill;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.sikar.web.HttpRequest;
 import com.example.sikar.web.MPCZConstants;
@@ -21,7 +24,7 @@ public class PayBill extends Activity {
 
     private TransactionInfo mTransactionInfo;
     private Context mContext ;
-    private EditText mStatusView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,16 +36,38 @@ public class PayBill extends Activity {
 
         mTransactionInfo = (TransactionInfo)getIntent().getExtras().get("TransactionInfo");
 
-        mStatusView = (EditText)findViewById(R.id.status);
-        mStatusView.setText(mTransactionInfo.getMessage());
+        TextView customerNameView = (TextView)findViewById(R.id.customer_name);
+        customerNameView.setText(mTransactionInfo.getCustomerName());
+
+        TextView accountNumberView = (TextView)findViewById(R.id.account_number);
+        accountNumberView.setText(mTransactionInfo.getTxtCustomerID());
+
+        TextView billAmountView = (TextView)findViewById(R.id.bill_amount);
+        billAmountView.setText(mTransactionInfo.getTxnAmount());
+
+        TextView billDueDateView = (TextView)findViewById(R.id.due_date);
+        billDueDateView.setText(mTransactionInfo.getBillDueDate());
+
+        TextView transactionTypeView = (TextView)findViewById(R.id.transaction_type);
+        transactionTypeView.setText(mTransactionInfo.getTransactionType());
+
+        TextView transactionStatusView = (TextView)findViewById(R.id.transaction_status);
+        transactionStatusView.setText(mTransactionInfo.getTransactionStatus());
 
         Button confirmButton = (Button)findViewById(R.id.confirm);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+/*
                 ProcessPaymentTask processPaymentTask = new ProcessPaymentTask(mTransactionInfo);
                 processPaymentTask.execute();
+                */
+                Intent webViewIntent = new Intent();
+                webViewIntent.setAction(Intent.ACTION_VIEW);
+                webViewIntent.addCategory(Intent.CATEGORY_BROWSABLE);
+                webViewIntent.setData(Uri.parse(MPCZConstants.BILLDESK_PAYMENT_URL));
+                //webViewIntent.putExtra("TransactionInfo",mTransactionInfo);
+                startActivity(webViewIntent);
             }
         });
     }
@@ -106,8 +131,8 @@ public class PayBill extends Activity {
             mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_2,mTransactionInfo.getTxtAdditionalInfo2());
             mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_3,mTransactionInfo.getTxtAdditionalInfo3());
             mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_4,mTransactionInfo.getTxtAdditionalInfo4());
-            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_5,mTransactionInfo.getTxtAdditionalInfo5());
-            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_6,mTransactionInfo.getTxtAdditionalInfo6());
+            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_5,mTransactionInfo.getTransactionType());
+            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_6,mTransactionInfo.getTransactionStatus());
             mQueryParameters.put(TransactionInfo.MESSAGE,mTransactionInfo.getMessage());
 
             return mQueryParameters;

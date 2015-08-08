@@ -56,7 +56,7 @@ public class ShowAccounts extends Activity {
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
-                                //list.remove(item);
+
                                 Intent showBillIntent = new Intent(mContext, ShowBill.class);
                                 showBillIntent.putExtra("Account", account);
                                 showBillIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

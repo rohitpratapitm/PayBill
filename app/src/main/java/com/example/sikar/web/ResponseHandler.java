@@ -92,7 +92,7 @@ public class ResponseHandler {
             return null;
         }
         TransactionInfo transactionInfo = new TransactionInfo();
-
+        aResponse = aResponse.replace("[","");aResponse = aResponse.replace("]","");aResponse = aResponse.replace("'","");
         String[] transactionValues = aResponse.split(",");
 
         if(transactionValues !=null && transactionValues.length > 0 ){

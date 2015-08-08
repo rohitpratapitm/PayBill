@@ -43,16 +43,19 @@ public class ShowBill extends Activity {
 
         customerNameView.setText(mAccount.getCustomerName());
 
-        TextView accountNumberView = (TextView)findViewById(R.id.accountnumber);
+        TextView accountNumberView = (TextView)findViewById(R.id.account_number);
         accountNumberView.setText(mAccount.getAccountId());
 
-        TextView billAmountView = (TextView)findViewById(R.id.billamount);
+        TextView billAmountView = (TextView)findViewById(R.id.bill_amount);
         billAmountView.setText(billInfo.getAmtToBePaid());
 
-        TextView billDueDatetView = (TextView)findViewById(R.id.duedate);
+        TextView billDueDatetView = (TextView)findViewById(R.id.due_date);
         billDueDatetView.setText(billInfo.getBillDueDate());
 
-        final Button payBillButton = (Button)findViewById(R.id.pay_bill);
+        TextView mobileNumberView = (TextView)findViewById(R.id.mobile_number);
+        mobileNumberView.setText(mAccount.getMobileNumber());
+
+        final Button payBillButton = (Button)findViewById(R.id.button_pay_bill);
         payBillButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
