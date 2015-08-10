@@ -2,20 +2,18 @@ package com.example.sikar.paybill;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.sikar.web.HttpRequest;
 import com.example.sikar.web.MPCZConstants;
 
+import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,16 +56,17 @@ public class PayBill extends Activity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-/*
+
                 ProcessPaymentTask processPaymentTask = new ProcessPaymentTask(mTransactionInfo);
                 processPaymentTask.execute();
-                */
+              /*
                 Intent webViewIntent = new Intent();
                 webViewIntent.setAction(Intent.ACTION_VIEW);
                 webViewIntent.addCategory(Intent.CATEGORY_BROWSABLE);
                 webViewIntent.setData(Uri.parse(MPCZConstants.BILLDESK_PAYMENT_URL));
                 //webViewIntent.putExtra("TransactionInfo",mTransactionInfo);
                 startActivity(webViewIntent);
+                */
             }
         });
     }
@@ -110,7 +109,12 @@ public class PayBill extends Activity {
         protected String doInBackground(Void... params) {
 
             HttpRequest postRequest = new HttpRequest(PAYMENT_GATEWAY_URL, HttpRequest.HTTP_REQUEST_TYPE.POST,mQueryParameters);
-            String response = postRequest.sendPOSTRequest(mQueryParameters);
+            postRequest.initializeHeader(initializeHeaderParameters());
+            String response = postRequest.sendPOSTRequest(mQueryParameters, false);
+            int responseCode = postRequest.getResponseCode();
+            if(responseCode== HttpURLConnection.HTTP_MOVED_TEMP){
+                System.out.println("Its a temporary redirection request 302");
+            }
             String location = postRequest.getHeaderField("Location");
             String cookie = postRequest.getHeaderField("Set-Cookie");
             return location;
@@ -121,19 +125,37 @@ public class PayBill extends Activity {
             System.out.println(aLocation);
         }
 
+        private Map<String,String> initializeHeaderParameters(){
+
+            Map<String,String> headerParameters = new HashMap<String,String>();
+            headerParameters.put(MPCZConstants.HEADER_ACCEPT, "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+            headerParameters.put(MPCZConstants.HEADER_ACCEPT_ENCODING, "gzip, deflate");
+            headerParameters.put(MPCZConstants.HEADER_COOKIE, null);
+            headerParameters.put(MPCZConstants.HEADER_USER_AGENT, "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36");
+            headerParameters.put(MPCZConstants.HEADER_ACCEPT_LANGUAGE, "en-US,en;q=0.8,hi;q=0.6");
+            headerParameters.put("Upgrade-Insecure-Requests","1");
+            headerParameters.put(MPCZConstants.HEADER_CONNECTION, "keep-alive");
+            headerParameters.put(MPCZConstants.HEADER_REFERER, "http://www.mpcz.co.in/portal/Bhopal_home.portal?_nfpb=true&_pageLabel=custCentre_OBP_bpl");
+            headerParameters.put(MPCZConstants.HEADER_HOST, MPCZConstants.HOST_URL_BILLDESK);
+            headerParameters.put(MPCZConstants.HEADER_CONTENT_TYPE, "application/x-www-form-urlencoded");
+            headerParameters.put("Cache-Control","max-age=0");
+            headerParameters.put("Origin",MPCZConstants.HOST_URL_MPCZ);
+
+            return headerParameters;
+        }
         private Map<String,String> initializeQueryParameters(){
 
-            mQueryParameters.put(MPCZConstants.RU,MPCZConstants.RU_ACKNOWLEDGMENT_VALUE);
-            mQueryParameters.put(TransactionInfo.BILLER_ID,mTransactionInfo.getBillerId());
-            mQueryParameters.put(TransactionInfo.TXT_CUSTOMER_ID,mTransactionInfo.getTxtCustomerID());
-            mQueryParameters.put(TransactionInfo.TXT_AMOUNT,mTransactionInfo.getTxnAmount());
-            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_1,mTransactionInfo.getTxtAdditionalInfo1());
-            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_2,mTransactionInfo.getTxtAdditionalInfo2());
-            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_3,mTransactionInfo.getTxtAdditionalInfo3());
-            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_4,mTransactionInfo.getTxtAdditionalInfo4());
-            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_5,mTransactionInfo.getTransactionType());
-            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_6,mTransactionInfo.getTransactionStatus());
-            mQueryParameters.put(TransactionInfo.MESSAGE,mTransactionInfo.getMessage());
+            mQueryParameters.put(MPCZConstants.RU, MPCZConstants.RU_ACKNOWLEDGMENT_VALUE);
+            mQueryParameters.put(TransactionInfo.BILLER_ID, mTransactionInfo.getBillerId());
+            mQueryParameters.put(TransactionInfo.TXT_CUSTOMER_ID, mTransactionInfo.getTxtCustomerID());
+            mQueryParameters.put(TransactionInfo.TXT_AMOUNT, mTransactionInfo.getTxnAmount());
+            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_1, mTransactionInfo.getTxtAdditionalInfo1());
+            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_2, mTransactionInfo.getTxtAdditionalInfo2());
+            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_3, mTransactionInfo.getTxtAdditionalInfo3());
+            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_4, mTransactionInfo.getTxtAdditionalInfo4());
+            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_5, mTransactionInfo.getTransactionType());
+            mQueryParameters.put(TransactionInfo.TXT_ADDITIONAL_INFO_6, mTransactionInfo.getTransactionStatus());
+            mQueryParameters.put(TransactionInfo.MESSAGE, mTransactionInfo.getMessage());
 
             return mQueryParameters;
         }

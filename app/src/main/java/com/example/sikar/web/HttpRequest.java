@@ -16,6 +16,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Created by sikar on 7/22/2015.
@@ -80,10 +82,12 @@ public class HttpRequest {
         return mResponse;
     }
 
-    public String sendPOSTRequest(Map<String,String> aQueryParameters) {
+    public String sendPOSTRequest(Map<String, String> aQueryParameters, boolean aSetDefaultHeader) {
 
         try {
-            initializeWithDefaults();
+            if(aSetDefaultHeader){
+                initializeWithDefaults();
+            }
             //Send parameters
             mConnection.setDoOutput(true);
             mConnection.setDoInput(true);
@@ -92,7 +96,12 @@ public class HttpRequest {
             wr.writeBytes(urlParameters);
             wr.flush();
             wr.close();
-            mResponse = convertInputStreamToString(mConnection.getInputStream());
+            if(aSetDefaultHeader){
+                mResponse = convertInputStreamToString(mConnection.getInputStream());
+            }else{
+                mResponse = convertGunZipStreamToString(mConnection.getInputStream());
+            }
+
             return mResponse;
         } catch (ProtocolException aProtocolException) {
             aProtocolException.printStackTrace();
@@ -102,6 +111,15 @@ public class HttpRequest {
         return null;
     }
 
+    public int getResponseCode(){
+        int responseCode = -1;
+        try {
+            responseCode = mConnection.getResponseCode();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return responseCode;
+    }
     public String getHeaderField(String aHeaderFieldName){
         String value = "";
         if(aHeaderFieldName != null){
@@ -113,9 +131,12 @@ public class HttpRequest {
         }
         return value;
     }
-    public void initializeHeader(HashMap<String,String> aHeaderParameters){
+    public void initializeHeader(Map<String,String> aHeaderParameters){
         if(aHeaderParameters == null || aHeaderParameters.isEmpty()){
             initializeWithDefaults();
+        }
+        for(Map.Entry<String, String> entry :aHeaderParameters.entrySet()){
+            mConnection.setRequestProperty(entry.getKey(),entry.getValue());
         }
     }
 
@@ -166,6 +187,27 @@ private String convertInputStreamToString(InputStream aInputStream) {
     return null;
 }
 
+    private String convertGunZipStreamToString(InputStream aInputStream) {
+
+        String inputLine = "";
+        BufferedReader responseReader = null;
+        try{
+            GZIPInputStream stream = new GZIPInputStream(aInputStream);
+            responseReader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8.name()));
+            StringBuffer responseBuffer = new StringBuffer();
+
+            while ((inputLine = responseReader.readLine()) != null)
+                responseBuffer.append(inputLine);
+
+            return responseBuffer.toString();
+
+        }catch (IOException aIOException){
+            aIOException.printStackTrace();
+        }finally {
+            close(responseReader);
+        }
+        return null;
+    }
 
     private void close(Reader aReader){
         if(aReader != null){

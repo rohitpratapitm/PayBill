@@ -5,7 +5,7 @@ package com.example.sikar.web;
  */
 public class MPCZConstants {
 
-    public static final String HOST_URL = "http://www.mpcz.co.in/portal/Bhopal_home.portal";
+    public static final String HOST_URL_MPCZ = "http://www.mpcz.co.in";
     public static final String HOME_SCREEN = "http://www.mpcz.co.in/portal/Bhopal_home.portal?_nfpb=true&_pageLabel=custCentre_viewBill_bpl";
     public static final String LOGIN_SCREEN = "http://www.mpcz.co.in/onlineBillPayment?do=onlineBillPaymentUnregValidate";
 
@@ -17,6 +17,7 @@ public class MPCZConstants {
     public static final String POST_ACCOUNT_ID = "accntId";
 
     public static final String RU = "RU";
+    public static final String HOST_URL_BILLDESK = "www.billdesk.com";
     public static final String RU_ACKNOWLEDGMENT_VALUE = "http://www.mpcz.co.in/paymentAck";
 
     public static final String BILLDESK_PAYMENT_URL = "https://www.billdesk.com/pgidsk/PGIMerchantPayment";
@@ -50,4 +51,16 @@ public class MPCZConstants {
      <input type="hidden" id="msg"  name="msg" value="MPMKBHOPAL|11593777|NA|0|NA|NA|NA|INR|NA|R|mpmkbhopal|NA|NA|F|9493692000|2424200|2429500|20-07-2015|2424205|SWAMI SARAN SHARMA|TANSEN|http://www.mpcz.co.in/paymentAck|2280209535" />
 
      */
+
+    public static final String HEADER_ACCEPT = "Accept";
+    public static final String HEADER_CONTENT_TYPE = "Content-type";
+    public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
+    public static final String HEADER_COOKIE = "Cookie";
+    public static final String HEADER_USER_AGENT = "User-Agent";
+    public static final String HEADER_ACCEPT_LANGUAGE = "Accept-Language";
+    public static final String HEADER_X_REQUESTED_WITH = "X-Requested-With";
+    public static final String HEADER_CONNECTION = "Connection";
+    public static final String HEADER_REFERER = "Referer";
+    public static final String HEADER_HOST = "Host";
+    public static final String DEFAULT_USER_AGENT = "Mozilla/5.0";
 }

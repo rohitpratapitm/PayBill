@@ -39,7 +39,7 @@ public class HttpPostTask extends AsyncTask<String,Void,Account> {
 
         HttpRequest httpPOSTRequest = new HttpRequest(MPCZConstants.LOGIN_SCREEN, HttpRequest.HTTP_REQUEST_TYPE.POST,postQueryParameters);
         httpPOSTRequest.setCookie(mSessionCookie);
-        String httpPOSTResponse = httpPOSTRequest.sendPOSTRequest(postQueryParameters);
+        String httpPOSTResponse = httpPOSTRequest.sendPOSTRequest(postQueryParameters, true);
 
         ResponseHandler responseHandler = new ResponseHandler();
         try{
